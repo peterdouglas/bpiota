@@ -107,6 +107,11 @@ func (bs Bundle) Hash() Trytes {
 	return h.Trytes()
 }
 
+/*// getValidShash gets a valid Sha hash of the bundle
+func (bs Bundle) getValidShash() Trytes {
+	bs.Hash()
+}*/
+
 // getValidHash calculates hash of Bundle and increases ObsoleteTag value
 // until normalized hash doesn't have any 13
 func (bs Bundle) getValidHash() Trytes {

@@ -272,41 +272,6 @@ func calcAddress(digests Trits) (Trits, error) {
 	return k.Squeeze(HashSize)
 }
 
-// NewAddress generates a new address from seed without checksum
-func NewAddress(seed Trytes, index, security int) (Address, error) {
-	k, err := newKeyTrits(seed, index, security)
-	if err != nil {
-		return "", err
-	}
-
-	dg, err := Digests(k)
-	if err != nil {
-		return "", err
-	}
-
-	addr, err := calcAddress(dg)
-	if err != nil {
-		return "", err
-	}
-
-	tryt := addr.Trytes()
-	return tryt.ToAddress()
-}
-
-// NewAddresses generates new count addresses from seed without a checksum
-func NewAddresses(seed Trytes, start, count, security int) ([]Address, error) {
-	as := make([]Address, count)
-
-	var err error
-	for i := 0; i < count; i++ {
-		as[i], err = NewAddress(seed, start+i, security)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return as, nil
-}
-
 // ToAddress converts string to address, and checks the validity
 func ToAddress(t string) (Address, error) {
 	return Trytes(t).ToAddress()
@@ -349,7 +314,6 @@ func (a Address) Checksum() Trytes {
 	if len(a) != 81 {
 		panic("len(address) must be 81")
 	}
-
 	return a.Hash()[81-9 : 81]
 }
 

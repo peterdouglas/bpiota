@@ -38,10 +38,10 @@ const DefaultNumberOfWalks = 5
 
 // GetUsedAddress generates a new address which is not found in the tangle
 // and returns its new address and used addresses.
-func GetUsedAddress(api *API, seed Trytes, security int) (Address, []Address, error) {
+func GetUsedAddress(api *API, seed Trytes) (Address, []Address, error) {
 	var all []Address
 	for index := 0; ; index++ {
-		adr, err := NewAddress(seed, index, security)
+		adr, err := NewAddress(seed, index)
 		if err != nil {
 			return "", nil, err
 		}
@@ -66,7 +66,7 @@ func GetUsedAddress(api *API, seed Trytes, security int) (Address, []Address, er
 
 // GetInputs gets all possible inputs of a seed and returns them with the total balance.
 // end must be under start+500.
-func GetInputs(api *API, seed Trytes, start, end int, threshold int64, security int) (Balances, error) {
+func GetInputs(api *API, seed Trytes, start, end int, threshold int64) (Balances, error) {
 	var err error
 	var adrs []Address
 
@@ -76,9 +76,9 @@ func GetInputs(api *API, seed Trytes, start, end int, threshold int64, security 
 
 	switch {
 	case end > 0:
-		adrs, err = NewAddresses(seed, start, end-start, security)
+		adrs, err = NewAddresses(seed, start, end-start)
 	default:
-		_, adrs, err = GetUsedAddress(api, seed, security)
+		_, adrs, err = GetUsedAddress(api, seed)
 	}
 
 	if err != nil {
@@ -145,20 +145,19 @@ func addOutputs(trs []Transfer) (Bundle, []Trytes, int64) {
 type AddressInfo struct {
 	Seed     Trytes
 	Index    int
-	Security int
 }
 
 // Address makes an Address from an AddressInfo
 func (a *AddressInfo) Address() (Address, error) {
-	return NewAddress(a.Seed, a.Index, a.Security)
+	return NewAddress(a.Seed, a.Index)
 }
 
 // Key makes a Key from an AddressInfo
 func (a *AddressInfo) Key() (Trytes, error) {
-	return NewKey(a.Seed, a.Index, a.Security)
+	return NewPublicKey(a.Seed, a.Index)
 }
 
-func setupInputs(api *API, seed Trytes, inputs []AddressInfo, security int, total int64) (Balances, []AddressInfo, error) {
+func setupInputs(api *API, seed Trytes, inputs []AddressInfo, total int64) (Balances, []AddressInfo, error) {
 	var bals Balances
 	var err error
 
@@ -169,7 +168,7 @@ func setupInputs(api *API, seed Trytes, inputs []AddressInfo, security int, tota
 		//  confirm that the inputs exceed the threshold
 
 		// If inputs with enough balance
-		bals, err = GetInputs(api, seed, 0, 100, total, security)
+		bals, err = GetInputs(api, seed, 0, 100, total)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -177,7 +176,6 @@ func setupInputs(api *API, seed Trytes, inputs []AddressInfo, security int, tota
 		inputs = make([]AddressInfo, len(bals))
 		for i := range bals {
 			inputs[i].Index = bals[i].Index
-			inputs[i].Security = security
 			inputs[i].Seed = seed
 		}
 	default:
@@ -207,7 +205,7 @@ func setupInputs(api *API, seed Trytes, inputs []AddressInfo, security int, tota
 // PrepareTransfers gets an array of transfer objects as input, and then prepares
 // the transfer by generating the correct bundle as well as choosing and signing the
 // inputs if necessary (if it's a value transfer).
-func PrepareTransfers(api *API, seed Trytes, trs []Transfer, inputs []AddressInfo, remainder Address, security int) (Bundle, error) {
+func PrepareTransfers(api *API, seed Trytes, trs []Transfer, inputs []AddressInfo, remainder Address) (Bundle, error) {
 	var err error
 
 	bundle, frags, total := addOutputs(trs)
@@ -219,12 +217,12 @@ func PrepareTransfers(api *API, seed Trytes, trs []Transfer, inputs []AddressInf
 		return bundle, nil
 	}
 
-	bals, inputs, err := setupInputs(api, seed, inputs, security, total)
+	bals, inputs, err := setupInputs(api, seed, inputs, total)
 	if err != nil {
 		return nil, err
 	}
 
-	err = addRemainder(api, bals, &bundle, security, remainder, seed, total)
+	err = addRemainder(api, bals, &bundle, remainder, seed, total)
 	if err != nil {
 		return nil, err
 	}
@@ -234,12 +232,12 @@ func PrepareTransfers(api *API, seed Trytes, trs []Transfer, inputs []AddressInf
 	return bundle, err
 }
 
-func addRemainder(api *API, in Balances, bundle *Bundle, security int, remainder Address, seed Trytes, total int64) error {
+func addRemainder(api *API, in Balances, bundle *Bundle, remainder Address, seed Trytes, total int64) error {
 	for _, bal := range in {
 		var err error
 
 		// Add input as bundle entry
-		bundle.Add(security, bal.Address, -bal.Value, time.Now(), EmptyHash)
+		bundle.Add(1, bal.Address, -bal.Value, time.Now(), EmptyHash)
 
 		// If there is a remainder value add extra output to send remaining funds to
 		if remain := bal.Value - total; remain > 0 {
@@ -247,7 +245,7 @@ func addRemainder(api *API, in Balances, bundle *Bundle, security int, remainder
 			adr := remainder
 			if adr == "" {
 				// Generate a new Address by calling getNewAddress
-				adr, _, err = GetUsedAddress(api, seed, security)
+				adr, _, err = GetUsedAddress(api, seed)
 				if err != nil {
 					return err
 				}
@@ -302,19 +300,6 @@ func signInputs(inputs []AddressInfo, bundle Bundle) error {
 		// Calculate the new signatureFragment with the first bundle fragment
 		bundle[i].SignatureMessageFragment = Sign(nHash[:27], key[:6561/3])
 
-		// if user chooses higher than 27-tryte security
-		// for each security level, add an additional signature
-		for j := 1; j < ai.Security; j++ {
-			//  Because the signature is > 2187 trytes, we need to find the subsequent
-			// transaction to add the remainder of the signature same address as well
-			// as value = 0 (as we already spent the input)
-			if bundle[i+j].Address == bd.Address && bundle[i+j].Value == 0 {
-				//  Calculate the new signature
-				nfrag := Sign(nHash[(j%3)*27:(j%3)*27+27], key[6561*j/3:(j+1)*6561/3])
-				//  Convert signature to trytes and assign it again to this bundle entry
-				bundle[i+j].SignatureMessageFragment = nfrag
-			}
-		}
 	}
 	return nil
 }
@@ -427,8 +412,8 @@ func Promote(api *API, tail Trytes, depth int64, trytes []Transaction, mwm int64
 
 // Send sends tokens. If you need to do pow locally, you must specifiy pow func,
 // otherwise this calls the AttachToTangle API
-func Send(api *API, seed Trytes, security int, trs []Transfer, mwm int64, pow PowFunc) (Bundle, error) {
-	bd, err := PrepareTransfers(api, seed, trs, nil, "", security)
+func Send(api *API, seed Trytes, trs []Transfer, mwm int64, pow PowFunc) (Bundle, error) {
+	bd, err := PrepareTransfers(api, seed, trs, nil, "")
 	if err != nil {
 		return nil, err
 	}

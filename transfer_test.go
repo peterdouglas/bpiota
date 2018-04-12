@@ -61,7 +61,7 @@ func TestTransfer1(t *testing.T) {
 
 	for i := 0; i < 5; i++ {
 		api := NewAPI(RandomNode(), nil)
-		adr, adrs, err = GetUsedAddress(api, seed, 2)
+		adr, adrs, err = GetUsedAddress(api, seed)
 		if err == nil {
 			break
 		}
@@ -79,7 +79,7 @@ func TestTransfer1(t *testing.T) {
 	var bal Balances
 	for i := 0; i < 5; i++ {
 		api := NewAPI(RandomNode(), nil)
-		bal, err = GetInputs(api, seed, 0, 10, 1000, 2)
+		bal, err = GetInputs(api, seed, 0, 10, 1000)
 		if err == nil {
 			break
 		}
@@ -113,7 +113,7 @@ func TestTransfer2(t *testing.T) {
 	var bdl Bundle
 	for i := 0; i < 5; i++ {
 		api := NewAPI(RandomNode(), nil)
-		bdl, err = PrepareTransfers(api, seed, trs, nil, "", 2)
+		bdl, err = PrepareTransfers(api, seed, trs, nil, "")
 		if err == nil {
 			break
 		}
@@ -139,7 +139,7 @@ func TestTransfer2(t *testing.T) {
 
 	for i := 0; i < 5; i++ {
 		api := NewAPI(RandomNode(), nil)
-		bdl, err = Send(api, seed, 2, trs, 18, pow)
+		bdl, err = Send(api, seed, trs, 18, pow)
 		if err == nil {
 			break
 		}

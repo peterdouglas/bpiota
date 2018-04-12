@@ -12,7 +12,7 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-const Host = "http://node03.iotatoken.nl:15265"
+const Host = "http://localhost:14265"
 
 func main() {
 	client := http.Client{
