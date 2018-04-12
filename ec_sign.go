@@ -26,10 +26,7 @@ SOFTWARE.
 package giota
 
 import (
-	"github.com/decred/dcrd/dcrec/secp256k1"
-	"log"
 	"github.com/NebulousLabs/hdkey"
-	"github.com/decred/base58"
 	"fmt"
 	"unicode/utf8"
 	"strings"
@@ -39,21 +36,6 @@ import (
 var (
 	mKey *hdkey.HDKey = nil
 )
-
-
-// NewSeed generate a random Trytes
-func NewECSeed() (Trytes, error) {
-	secretKey, err := secp256k1.GeneratePrivateKey()
-	if err != nil {
-		log.Fatal(err)
-		return "", err
-	}
-	hdkey.GenerateSeed(16)
-
-	stringSec := base58.Encode(secretKey.GetD().Bytes());
-	return ToTrytes(stringSec)
-}
-
 
 
 // NewKey takes a seed encoded as Trytes, an index and a security
@@ -90,7 +72,7 @@ func NewPublicKey(seed Trytes, index int) (Trytes, error) {
 }
 
 func NewAddress(seed Trytes, index int) (Address, error) {
-	tryteAdd, err := NewPublicKey(seed, index)
+	tryteAdd, err := NewPublicKey(seed, index+1)
 	if err != nil {
 		return "", err
 	}

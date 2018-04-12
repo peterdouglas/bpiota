@@ -9,7 +9,6 @@ import (
 	"github.com/NebulousLabs/hdkey/eckey"
 	"math/big"
 	"github.com/decred/base58"
-	"crypto/sha256"
 	"github.com/NebulousLabs/hdkey/schnorr"
 )
 
@@ -188,7 +187,7 @@ func TestDecoding(t *testing.T) {
 	}
 }
 
-func TestAddessing(t *testing.T) {
+func TestAddressing(t *testing.T) {
 	addressTrytes := Trytes("UYUNFEZOOIMJJOMBXZTSRK9BNXVDCLEJFTZTJVHYPNUFG9HDXGRSIEIJDGXIGAMJOQMHJATQXLCSUKAD9")
 	addressWithCS := Trytes("UYUNFEZOOIMJJOMBXZTSRK9BNXVDCLEJFTZTJVHYPNUFG9HDXGRSIEIJDGXIGAMJOQMHJATQXLCSUKAD9GCBUTFUBD")
 	addr, err := addressTrytes.ToAddress()
@@ -205,7 +204,7 @@ func TestAddessing(t *testing.T) {
 
 func TestECSign(t *testing.T) {
 	seed := Trytes("CLBHL9DOQXUHBWORNBHNPUB9JQUHYLLXXCJQRJVRJXYHAAISJPTDA9ZFVLPPNAHLDNMDDMGYXEDVROMQV")
-	testHashData := "Thisisthetestdata"
+	testHashData := "TSIIPJNKJCKOLFD9P9UZCU9ZGAIFUOUASJXLHNQFGEWUHCSCPTXMTEUBAYHHNSXRMJTAZ99GTOOPC9BUW"
 	//addressTrytes := Trytes("NDXCPBCB9BFCACEDOBCDFCRBOBKDBDXCRCBBNDCBCCWCUCCCZBSCFDXBNBJDKDHDRBVCTBGCZACDNDADFCZCHCID")
 	//fmt.Printf("the seed is %s\n", seed)
 	byteSeed, err := seed.Trits().Bytes()
@@ -217,9 +216,9 @@ func TestECSign(t *testing.T) {
 
 	secKey, err := key.SecretKey()
 
-	hash := sha256.Sum256([]byte(testHashData))
+	//hash := sha256.Sum256([]byte(testHashData))
 
-	sig, err := schnorr.Sign(secKey, hash[:])
+	sig, err := schnorr.Sign(secKey,[]byte(testHashData))
 	fmt.Printf("Sig1 is %x\n", sig)
 	if err != nil {
 		t.Error("The signature has failed")
@@ -231,7 +230,7 @@ func TestECSign(t *testing.T) {
 	copy(rebSig[:], base58.Decode(rebuilt))
 	fmt.Printf("Sig2 is %x\n", rebSig)
 
-	err = schnorr.Verify(rebSig, key.PublicKey(), hash[:])
+	err = schnorr.Verify(rebSig, key.PublicKey(), []byte(testHashData))
 
 	if err != nil {
 		t.Error("Failed to verify signature")
