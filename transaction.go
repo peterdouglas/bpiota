@@ -37,6 +37,7 @@ type Transaction struct {
 	Address                       Address
 	Value                         int64 `json:",string"`
 	BlindingFactor				  Trytes
+	RangeProof					  Trytes
 	ObsoleteTag                   Trytes
 	Timestamp                     time.Time `json:",string"`
 	CurrentIndex                  int64     `json:",string"`
@@ -65,8 +66,12 @@ const (
 	AddressTrinaryOffset                  = SignatureMessageFragmentTrinaryOffset + SignatureMessageFragmentTrinarySize
 	AddressTrinarySize                    = 243
 	ValueTrinaryOffset                    = AddressTrinaryOffset + AddressTrinarySize
-	ValueTrinarySize                      = 81
-	ObsoleteTagTrinaryOffset              = ValueTrinaryOffset + ValueTrinarySize
+	ValueTrinarySize                      = 243
+	BlindingTrinaryOffset	              = ValueTrinaryOffset + ValueTrinarySize
+	BlindingTrinarySize           		  = 1830
+	RangeProofTrinaryOffset	              = BlindingTrinaryOffset + BlindingTrinarySize
+	RangeProofTrinarySize          		  = 20850
+	ObsoleteTagTrinaryOffset              = RangeProofTrinaryOffset + RangeProofTrinarySize
 	ObsoleteTagTrinarySize                = 81
 	TimestampTrinaryOffset                = ObsoleteTagTrinaryOffset + ObsoleteTagTrinarySize
 	TimestampTrinarySize                  = 27

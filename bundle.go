@@ -107,11 +107,6 @@ func (bs Bundle) Hash() Trytes {
 	return h.Trytes()
 }
 
-/*// getValidShash gets a valid Sha hash of the bundle
-func (bs Bundle) getValidShash() Trytes {
-	bs.Hash()
-}*/
-
 // getValidHash calculates hash of Bundle and increases ObsoleteTag value
 // until normalized hash doesn't have any 13
 func (bs Bundle) getValidHash() Trytes {
@@ -151,11 +146,11 @@ func (bs Bundle) getValidHash() Trytes {
 
 func getTritsToHash(buf Trits, b *Transaction, i, l int) {
 	copy(buf, Trytes(b.Address).Trits())
-	copy(buf[243:], Int2Trits(b.Value, ValueTrinarySize))
-	copy(buf[243+81:], b.ObsoleteTag.Trits())
-	copy(buf[243+81+81:], Int2Trits(b.Timestamp.Unix(), TimestampTrinarySize))
-	copy(buf[243+81+81+27:], Int2Trits(int64(i), CurrentIndexTrinarySize))   //CurrentIndex
-	copy(buf[243+81+81+27+27:], Int2Trits(int64(l-1), LastIndexTrinarySize)) //LastIndex
+	copy(buf[AddressTrinarySize:], Int2Trits(b.Value, ValueTrinarySize))
+	copy(buf[AddressTrinarySize+ValueTrinarySize:], b.ObsoleteTag.Trits())
+	copy(buf[AddressTrinarySize+ValueTrinarySize+ObsoleteTagTrinarySize:], Int2Trits(b.Timestamp.Unix(), TimestampTrinarySize))
+	copy(buf[AddressTrinarySize+ValueTrinarySize+ObsoleteTagTrinarySize+TimestampTrinarySize:], Int2Trits(int64(i), CurrentIndexTrinarySize))   //CurrentIndex
+	copy(buf[AddressTrinarySize+ValueTrinarySize+ObsoleteTagTrinarySize+TimestampTrinarySize+CurrentIndexTrinarySize:], Int2Trits(int64(l-1), LastIndexTrinarySize)) //LastIndex
 }
 
 // Categorize categorizes a list of transfers into sent and received. It is important to
