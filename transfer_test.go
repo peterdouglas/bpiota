@@ -24,7 +24,6 @@ SOFTWARE.
 package giota
 
 import (
-	"os"
 	"testing"
 )
 
@@ -34,7 +33,7 @@ var (
 )
 
 func init() {
-	ts := os.Getenv("TRANSFER_TEST_SEED")
+	ts := "CLBHL9DOQXUHBWORNBHNPUB9JQUHYLLXXCJQRJVRJXYHAAISJPTDA9ZFVLPPNAHLDNMDDMGYXEDVROMQV"
 	if ts == "" {
 		skipTransferTest = true
 		return
@@ -104,7 +103,7 @@ func TestTransfer2(t *testing.T) {
 	var err error
 	trs := []Transfer{
 		Transfer{
-			Address: "KTXFP9XOVMVWIXEWMOISJHMQEXMYMZCUGEQNKGUNVRPUDPRX9IR9LBASIARWNFXXESPITSLYAQMLCLVTL9QTIWOWTY",
+			Address: "BXHANKTHPJUPUVZOLJPZPQLDZPWVSBPGLMLSOYFZM9RSHVZRRBZJZJDZYTNRHXBVMQKFT9DVKVNDPCGC9ZXXTZCTMB",
 			Value:   20,
 			Tag:     "MOUDAMEPO",
 		},
@@ -139,7 +138,7 @@ func TestTransfer2(t *testing.T) {
 
 	for i := 0; i < 5; i++ {
 		api := NewAPI(RandomNode(), nil)
-		bdl, err = Send(api, seed, trs, 18, pow)
+		bdl, err = Send(api, seed, trs, DefaultMinWeightMagnitude, pow)
 		if err == nil {
 			break
 		}

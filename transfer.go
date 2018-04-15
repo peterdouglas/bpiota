@@ -28,6 +28,13 @@ import (
 	"errors"
 	"math"
 	"time"
+	"github.com/NebulousLabs/hdkey"
+	"fmt"
+	"log"
+	"github.com/NebulousLabs/hdkey/schnorr"
+	"github.com/decred/base58"
+	"crypto/sha256"
+	"math/big"
 )
 
 // (3^27-1)/2
@@ -144,17 +151,39 @@ func addOutputs(trs []Transfer) (Bundle, []Trytes, int64) {
 // AddressInfo includes an address and its infomation for signing.
 type AddressInfo struct {
 	Seed     Trytes
+	Sk       *hdkey.HDKey
 	Index    int
 }
 
 // Address makes an Address from an AddressInfo
 func (a *AddressInfo) Address() (Address, error) {
-	return NewAddress(a.Seed, a.Index)
+	pkCompressed := a.Sk.PublicKey().Compress()
+	pkInt := new(big.Int).SetBytes(pkCompressed[:])
+	keyTrit := make([]byte, 48)
+	copy(keyTrit, pkInt.Bytes())
+	trits, err := BytesToTrits(keyTrit)
+	if err != nil {
+		return "", err
+	}
+
+	return trits.Trytes().ToAddress()
+
 }
 
 // Key makes a Key from an AddressInfo
 func (a *AddressInfo) Key() (Trytes, error) {
 	return NewPublicKey(a.Seed, a.Index)
+}
+
+// Key makes a Key from an AddressInfo
+func (a *AddressInfo) Secret() (error){
+	sk, err := NewSecKey(a.Seed, a.Index)
+	a.Sk = sk
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func setupInputs(api *API, seed Trytes, inputs []AddressInfo, total int64) (Balances, []AddressInfo, error) {
@@ -177,12 +206,14 @@ func setupInputs(api *API, seed Trytes, inputs []AddressInfo, total int64) (Bala
 		for i := range bals {
 			inputs[i].Index = bals[i].Index
 			inputs[i].Seed = seed
+			inputs[i].Secret()
 		}
 	default:
 		//  Case 1: user provided inputs
 		adrs := make([]Address, len(inputs))
 		for i, ai := range inputs {
 			adrs[i], err = ai.Address()
+
 			if err != nil {
 				return nil, nil, err
 			}
@@ -228,7 +259,7 @@ func PrepareTransfers(api *API, seed Trytes, trs []Transfer, inputs []AddressInf
 	}
 
 	bundle.Finalize(frags)
-	err = signInputs(inputs, bundle)
+	err = signInputs(inputs, bundle, seed)
 	return bundle, err
 }
 
@@ -265,9 +296,12 @@ func addRemainder(api *API, in Balances, bundle *Bundle, remainder Address, seed
 	return nil
 }
 
-func signInputs(inputs []AddressInfo, bundle Bundle) error {
+func signInputs(inputs []AddressInfo, bundle Bundle, seed Trytes) error {
 	//  Get the normalized bundle hash
-	nHash := bundle.Hash().Normalize()
+	nHash := bundle.Hash()
+
+	sha256.New()
+	hash := sha256.Sum256([]byte(nHash))
 
 	// SIGNING OF INPUTS
 	// Here we do the actual signing of the inputs. Iterate over all bundle transactions,
@@ -292,13 +326,26 @@ func signInputs(inputs []AddressInfo, bundle Bundle) error {
 		}
 
 		// Get corresponding private key of the address
-		key, err := ai.Key()
+		ai.Seed = seed
+		err := ai.Secret()
+
 		if err != nil {
-			return err
+			log.Fatal(err)
 		}
+		sk, err := ai.Sk.SecretKey()
+
+		if err != nil {
+			log.Fatal(err)
+		}
+		sig, err := schnorr.Sign(sk, hash[:])
+		fmt.Printf("Sig1 is %x\nHash is %s\n", sig, hash)
+		if err != nil {
+			log.Fatal("The signature has failed")
+		}
+		tryteSig, err := AsciiToTrytes(base58.Encode(sig[:]))
 
 		// Calculate the new signatureFragment with the first bundle fragment
-		bundle[i].SignatureMessageFragment = Sign(nHash[:27], key[:6561/3])
+		bundle[i].SignatureMessageFragment = tryteSig
 
 	}
 	return nil

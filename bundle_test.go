@@ -85,6 +85,10 @@ func TestBundle(t *testing.T) {
 		}
 
 		bs.Finalize([]Trytes{})
+		err := bs.IsValid()
+		if err != nil {
+			t.Error(err)
+		}
 
 		send, receive := bs.Categorize(tt.transactions[1].addr)
 		if len(send) != 1 || len(receive) != 1 {

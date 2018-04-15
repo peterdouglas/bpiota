@@ -213,6 +213,7 @@ func (bs Bundle) IsValid() error {
 	// Validate the signatures
 	h := bs.Hash()
 	for adr, sig := range sigs {
+
 		if !IsValidSig(adr, sig, h) {
 			return errors.New("invalid signature")
 		}

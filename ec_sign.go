@@ -71,6 +71,28 @@ func NewPublicKey(seed Trytes, index int) (Trytes, error) {
 	return trits.Trytes(), err
 }
 
+func NewSecKey(seed Trytes, index int) (*hdkey.HDKey, error) {
+	bytesSec, err := seed.Trits().Bytes()
+	if err != nil {
+		return &hdkey.HDKey{}, err
+	}
+
+	if mKey == nil {
+		key, err := hdkey.NewMaster(bytesSec, nil, 1)
+		if err != nil {
+			return &hdkey.HDKey{}, err
+		}
+		mKey = key
+	}
+
+	secKey, err := mKey.Child(uint32(index))
+	if err != nil {
+		return &hdkey.HDKey{}, err
+	}
+
+	return secKey, err
+}
+
 func NewAddress(seed Trytes, index int) (Address, error) {
 	tryteAdd, err := NewPublicKey(seed, index+1)
 	if err != nil {

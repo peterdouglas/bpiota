@@ -29,6 +29,12 @@ import (
 	"crypto/rand"
 	"errors"
 	"math/big"
+	"log"
+	"github.com/NebulousLabs/hdkey/eckey"
+	"fmt"
+	"crypto/sha256"
+	"github.com/NebulousLabs/hdkey/schnorr"
+	"github.com/decred/base58"
 )
 
 // errors used in sign
@@ -213,46 +219,42 @@ func digest(normalizedBundleFragment []int8, signatureFragment Trytes) Trits {
 	return tr
 }
 
-// Sign calculates signature from bundle hash and key
-// by hashing x 13-normalizedBundleFragment[i] for each segments in keyTrits.
-func Sign(normalizedBundleFragment []int8, keyFragment Trytes) Trytes {
-	signatureFragment := make(Trits, len(keyFragment)*3)
-	for i := 0; i < 27; i++ {
-		bb := keyFragment[i*HashSize/3 : (i+1)*HashSize/3].Trits()
-		for j := 0; j < 13-int(normalizedBundleFragment[i]); j++ {
-			kerl := NewKerl()
-			kerl.Absorb(bb)
-			// TODO: why is the error ignored here?
-			bb, _ = kerl.Squeeze(HashSize)
-		}
-		copy(signatureFragment[i*HashSize:], bb)
-	}
-	return signatureFragment.Trytes()
-}
 
 // IsValidSig validates signatureFragment.
-func IsValidSig(expectedAddress Address, signatureFragments []Trytes, bundleHash Trytes) bool {
-	normalizedBundleHash := bundleHash.Normalize()
+func IsValidSig(address Address, signatureFragments []Trytes, bundleHash Trytes) bool {
+	byteKey, err := Trytes(address[:81]).Trits().Bytes()
+	if err != nil {
+		log.Fatalf("Error converting from trytes %s\n", err)
+	}
 
-	// Get digests
-	digests := make(Trits, HashSize*len(signatureFragments))
+	pkKey, err := eckey.NewCompressedPublicKey(byteKey[:33])
+
+	uncompPk, err := pkKey.Uncompress()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	for i := range signatureFragments {
-		start := 27 * (i % 3)
-		digestBuffer := digest(normalizedBundleHash[start:start+27], signatureFragments[i])
-		copy(digests[i*HashSize:], digestBuffer)
+		rebuilt, err := TrytesToAscii(signatureFragments[i])
+		if err != nil {
+			log.Fatal(err)
+		}
+		rebSig := new(schnorr.Signature)
+		copy(rebSig[:], base58.Decode(rebuilt))
+		fmt.Printf("Sig2 is %x\n", rebSig)
+		sha256.New()
+		hash := sha256.Sum256([]byte(bundleHash))
+		err = schnorr.Verify(rebSig, uncompPk, hash[:]); if err != nil {
+			log.Fatalf("The error is: %s\nThe hash is %s and the public key is %s", err, bundleHash, uncompPk.Compress())
+		}
 	}
 
-	addrTrites, err := calcAddress(digests)
+
 	if err != nil {
 		return false
 	}
 
-	address, err := addrTrites.Trytes().ToAddress()
-	if err != nil {
-		return false
-	}
-
-	return expectedAddress == address
+	return true
 }
 
 // Address represents address without a checksum for iota.
@@ -265,16 +267,19 @@ var (
 	ErrInvalidAddressTrits  = errors.New("addresses without checksum are 243 trits in length")
 )
 
-// calcAddress calculates address from digests
-func calcAddress(digests Trits) (Trits, error) {
-	k := NewKerl()
-	k.Absorb(digests)
-	return k.Squeeze(HashSize)
-}
 
 // ToAddress converts string to address, and checks the validity
 func ToAddress(t string) (Address, error) {
 	return Trytes(t).ToAddress()
+}
+
+// CreateAddress creates a new address - this method is to allow for exporting to java
+func (a *Address) CreateAddress(seed Trytes, index int) Address {
+	addr, err := NewAddress(seed, index)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return addr
 }
 
 // ToAddress convert trytes(with and without checksum) to address and checks the validity

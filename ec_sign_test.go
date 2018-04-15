@@ -10,6 +10,7 @@ import (
 	"math/big"
 	"github.com/decred/base58"
 	"github.com/NebulousLabs/hdkey/schnorr"
+	"crypto/sha256"
 )
 
 func TestNewECSeed(t *testing.T) {
@@ -124,7 +125,8 @@ func TestEncoding(t *testing.T) {
 }
 
 func TestAddressLength(t *testing.T) {
-	seed, err := ToTrytes("CLBHL9DOQXUHBWORNBHNPUB9JQUHYLLXXCJQRJVRJXYHAAISJPTDA9ZFVLPPNAHLDNMDDMGYXEDVROMQV")
+	seed2, err := ToTrytes("CLBHL9DOQXUHBWORNBHNPUB9JQUHYLLXXCJQRJVRJXYHAAISJPTDA9ZFVLPPNAHLDNMDDMGYXEDVROMQV")
+	//seed2, err := ToTrytes("CIXIFADSMGPA9HERAVAZMCUSEDJHKDKVYIEZNCAIYJQNHZNSHUEDSREQYIIMIQLTRPKPAFTAJX9FNNZBK")
 	if err != nil {
 		t.Error(err)
 	}
@@ -132,15 +134,15 @@ func TestAddressLength(t *testing.T) {
 		min int = 100
 		max int = 0
 	)
+	addr2 := Address("BXHANKTHPJUPUVZOLJPZPQLDZPWVSBPGLMLSOYFZM9RSHVZRRBZJZJDZYTNRHXBVMQKFT9DVKVNDPCGC9")
+	addC := string(addr2) + string(addr2.Checksum())
+	fmt.Println(addC)
+	for i:= 0; i < 5 ; i++  {
+		addr := Address("")
+		addr = addr.CreateAddress(seed2, i)
 
-	for i:= 1; i < 5 ; i++  {
-		newKey, err := NewPublicKey(seed, i)
-		if err != nil {
-			t.Error(err)
-		}
-
-		length := len(newKey)
-		fmt.Printf("Address %s is %s\n", i, newKey)
+		length := len(addr)
+		fmt.Printf("Address %s is %s%s\n", i, addr, addr.Checksum())
 		if length < min {
 			min = length
 		}
@@ -165,7 +167,6 @@ func TestDecoding(t *testing.T) {
 	}
 
 	secKey, err := key.SecretKey()
-
 	// serialize public key
 	//pkCompressed := secKey.PublicKey().Compress()
 	byteKey, err := addressTrytes.Trits().Bytes()
@@ -216,9 +217,18 @@ func TestECSign(t *testing.T) {
 
 	secKey, err := key.SecretKey()
 
-	//hash := sha256.Sum256([]byte(testHashData))
+	childKey, err := key.Child(3)
+	if err != nil {
+		t.Error(err)
+	}
+	childSec, err := childKey.SecretKey()
+	if err != nil {
+		t.Error(err)
+	}
 
+	//hash := sha256.Sum256([]byte(testHashData))
 	sig, err := schnorr.Sign(secKey,[]byte(testHashData))
+	sig2, err := schnorr.Sign(childSec,[]byte(testHashData))
 	fmt.Printf("Sig1 is %x\n", sig)
 	if err != nil {
 		t.Error("The signature has failed")
@@ -231,6 +241,7 @@ func TestECSign(t *testing.T) {
 	fmt.Printf("Sig2 is %x\n", rebSig)
 
 	err = schnorr.Verify(rebSig, key.PublicKey(), []byte(testHashData))
+	err = schnorr.Verify(sig2, key.PublicKey(), []byte(testHashData))
 
 	if err != nil {
 		t.Error("Failed to verify signature")
@@ -239,4 +250,104 @@ func TestECSign(t *testing.T) {
 }
 
 
+func TestKeygen(t *testing.T) {
+	seed := Trytes("CLBHL9DOQXUHBWORNBHNPUB9JQUHYLLXXCJQRJVRJXYHAAISJPTDA9ZFVLPPNAHLDNMDDMGYXEDVROMQV")
+	addressTrytes := Trytes("UYUNFEZOOIMJJOMBXZTSRK9BNXVDCLEJFTZTJVHYPNUFG9HDXGRSIEIJDGXIGAMJOQMHJATQXLCSUKAD9")
 
+
+	addr, err := NewAddress(seed, 1)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// serialize public key
+	//pkCompressed := secKey.PublicKey().Compress()
+	byteKey, err := addressTrytes.Trits().Bytes()
+	if err != nil {
+		t.Errorf("Error converting from trytes %s\n", err)
+	}
+
+
+	byteKey2, err := Trytes(addr).Trits().Bytes()
+	if err != nil {
+		t.Errorf("Error converting from trytes %s\n", err)
+	}
+
+
+
+	pkKey, err := secp256k1.ParsePubKey(byteKey[:33])
+	if err != nil {
+		t.Errorf("Error decoding Public Key, %s\n", err)
+	}
+
+
+
+	pkKey2, err := secp256k1.ParsePubKey(byteKey2[:33])
+	//pkKey2, err := eckey.NewCompressedPublicKey(byteKey2[:33])
+	if err != nil {
+		t.Errorf("Error decoding Public Key, %s\n", err)
+	}
+
+	if (pkKey2.X.Cmp(pkKey.X) + pkKey2.Y.Cmp(pkKey.Y)) != 0 {
+		t.Error("Keys did not match")
+	}
+}
+
+func TestSigningFromKeyGen(t *testing.T) {
+	seed := Trytes("CLBHL9DOQXUHBWORNBHNPUB9JQUHYLLXXCJQRJVRJXYHAAISJPTDA9ZFVLPPNAHLDNMDDMGYXEDVROMQV")
+	//addressTrytes := Trytes("UYUNFEZOOIMJJOMBXZTSRK9BNXVDCLEJFTZTJVHYPNUFG9HDXGRSIEIJDGXIGAMJOQMHJATQXLCSUKAD9")
+	hash := Trytes("TSIIPJNKJCKOLFD9P9UZCU9ZGAIFUOUASJXLHNQFGEWUHCSCPTXMTEUBAYHHNSXRMJTAZ99GTOOPC9BUW")
+
+	seedBytes, err := seed.Trits().Bytes()
+	mKey, err := hdkey.NewMaster(seedBytes, nil, 1)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	secKey, err := mKey.SecretKey()
+	//secByte := secKey[:]
+	//pubKey, err := mKey.Child(1)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//sk, pk := secp256k1.PrivKeyFromBytes(secByte)
+
+
+	sha256.New()
+	hashSh := sha256.Sum256([]byte(hash))
+	sig, err := schnorr.Sign(secKey, hashSh[:] )
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sigTrytes, err := AsciiToTrytes(base58.Encode(sig[:]))
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Printf("Signature is %s\n", sigTrytes)
+	}
+
+	rebuilt, err := TrytesToAscii(sigTrytes)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sha256.New()
+	hashSh2 := sha256.Sum256([]byte(hash))
+	sigReb := new(schnorr.Signature)
+	copy(sigReb[:], base58.Decode(rebuilt))
+	err = schnorr.Verify(sigReb, secKey.PublicKey(), hashSh2[:])
+	if err != nil {
+		t.Errorf("Sig %s\n failed %s", sigReb[:], sig[:])
+	}
+
+	// serialize public key
+	//pkCompressed := secKey.PublicKey().Compress()
+	//byteKey, err := addressTrytes.Trits().Bytes()
+	if err != nil {
+		t.Errorf("Error converting from trytes %s\n", err)
+	}
+
+
+}
