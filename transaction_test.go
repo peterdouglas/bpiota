@@ -49,7 +49,7 @@ func TestNewTransactionFromTrits(t *testing.T) {
 		TrunkTransaction:         "999999999999999999999999999999999999999999999999999999999999999999999999999999999",
 		BranchTransaction:        "999999999999999999999999999999999999999999999999999999999999999999999999999999999",
 	}
-
+	ToTrits()
 	tt, err := NewTransaction(trytes)
 	if err != nil {
 		t.Fatalf("TransactionFromTrits() expected err to be %#v but got %#v", nil, err)

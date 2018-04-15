@@ -36,6 +36,7 @@ type Transaction struct {
 	SignatureMessageFragment      Trytes
 	Address                       Address
 	Value                         int64 `json:",string"`
+	BlindingFactor				  Trytes
 	ObsoleteTag                   Trytes
 	Timestamp                     time.Time `json:",string"`
 	CurrentIndex                  int64     `json:",string"`

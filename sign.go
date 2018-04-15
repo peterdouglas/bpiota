@@ -71,53 +71,6 @@ func NewSeed() Trytes {
 	return Trytes(t)
 }
 
-// newKeyTrits takes a seed encoded as Trytes, an index and a security
-// level to derive a private key returned as Trits
-func newKeyTrits(seed Trytes, index, securityLevel int) (Trits, error) {
-	if err := seed.IsValid(); err != nil {
-		return nil, err
-	} else if len(seed) != TritHashLength/Radix {
-		return nil, ErrSeedTrytesLength
-	}
-
-	seedTrits := seed.Trits()
-	// Utils.increment
-	for i := 0; i < index; i++ {
-		incTrits(seedTrits)
-	}
-
-	k := NewKerl()
-	err := k.Absorb(seedTrits)
-	if err != nil {
-		return nil, err
-	}
-
-	hashedTrits, _ := k.Squeeze(HashSize)
-	k.Reset()
-	err = k.Absorb(hashedTrits)
-	if err != nil {
-		return nil, err
-	}
-
-	key := make(Trits, (HashSize * 27 * securityLevel))
-
-	for l := 0; l < securityLevel; l++ {
-		for i := 0; i < 27; i++ {
-			b, _ := k.Squeeze(HashSize)
-			copy(key[(l*27+i)*HashSize:], b)
-		}
-	}
-
-	return key, nil
-}
-
-// NewKey takes a seed encoded as Trytes, an index and a security
-// level to derive a private key returned as Trytes
-func NewKey(seed Trytes, index, securityLevel int) (Trytes, error) {
-	ts, err := newKeyTrits(seed, index, securityLevel)
-	return ts.Trytes(), err
-}
-
 func clearState(l *[stateSize]uint64, h *[stateSize]uint64) {
 	for j := HashSize; j < stateSize; j++ {
 		l[j] = 0xffffffffffffffff
@@ -174,65 +127,9 @@ func seri27(l *[stateSize]uint64, h *[stateSize]uint64) Trytes {
 	return keyFragment.Trytes()
 }
 
-// Digests calculates hash x 26 for each segment in keyTrits
-func Digests(key Trits) (Trits, error) {
-	if len(key) < HashSize*27 {
-		return nil, ErrKeyTritsLength
-	}
-
-	// Integer division, becaue we don't care about impartial keys.
-	numKeys := len(key) / (HashSize * 27)
-	digests := make(Trits, HashSize*numKeys)
-	buffer := make(Trits, HashSize)
-
-	for i := 0; i < numKeys; i++ {
-		k2 := NewKerl()
-		for j := 0; j < 27; j++ {
-			copy(buffer, key[i*SignatureSize+j*HashSize:i*SignatureSize+(j+1)*HashSize])
-
-			for k := 0; k < 26; k++ {
-				k := NewKerl()
-				k.Absorb(buffer)
-				buffer, _ = k.Squeeze(HashSize)
-			}
-			k2.Absorb(buffer)
-		}
-		buffer, _ = k2.Squeeze(HashSize)
-		copy(digests[i*HashSize:], buffer)
-	}
-	return digests, nil
-}
-
-// digest calculates hash x normalizedBundleFragment[i] for each segment in keyTrits.
-func digest(normalizedBundleFragment []int8, signatureFragment Trytes) Trits {
-	k := NewKerl()
-	for i := 0; i < 27; i++ {
-		bb := signatureFragment[i*HashSize/3 : (i+1)*HashSize/3].Trits()
-		for j := normalizedBundleFragment[i] + 13; j > 0; j-- {
-			kerl := NewKerl()
-			kerl.Absorb(bb)
-			bb, _ = kerl.Squeeze(HashSize)
-		}
-		k.Absorb(bb)
-	}
-	tr, _ := k.Squeeze(HashSize)
-	return tr
-}
-
-
 // IsValidSig validates signatureFragment.
 func IsValidSig(address Address, signatureFragments []Trytes, bundleHash Trytes) bool {
-	byteKey, err := Trytes(address[:81]).Trits().Bytes()
-	if err != nil {
-		log.Fatalf("Error converting from trytes %s\n", err)
-	}
-
-	pkKey, err := eckey.NewCompressedPublicKey(byteKey[:33])
-
-	uncompPk, err := pkKey.Uncompress()
-	if err != nil {
-		log.Fatal(err)
-	}
+	uncompPk, err := address.DecodePubKey()
 
 	for i := range signatureFragments {
 		rebuilt, err := TrytesToAscii(signatureFragments[i])
@@ -329,6 +226,23 @@ func (a Address) Hash() Trytes {
 	k.Absorb(t)
 	h, _ := k.Squeeze(HashSize)
 	return h.Trytes()
+}
+
+// DecodePubKey returns the public key stored in the address
+func (a Address) DecodePubKey() (*eckey.PublicKey, error) {
+	byteKey, err := Trytes(a[:81]).Trits().Bytes()
+	if err != nil {
+		return &eckey.PublicKey{}, err
+	}
+
+	pkKey, err := eckey.NewCompressedPublicKey(byteKey[:33])
+
+	uncompPk, err := pkKey.Uncompress()
+	if err != nil {
+		return &eckey.PublicKey{}, err
+	}
+	return uncompPk, nil
+
 }
 
 // WithChecksum returns Address+checksum. This panics if len(address)<81
