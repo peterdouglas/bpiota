@@ -431,13 +431,13 @@ type GetBalancesRequest struct {
 // GetBalancesResponse is for GetBalances API response.
 type GetBalancesResponse struct {
 	Duration       int64   `json:"duration"`
-	Balances       []int64 `json:"balances"`
+	Balances       []string `json:"balances"`
 	Milestone      Trytes  `json:"milestone"`
 	MilestoneIndex int64   `json:"milestoneIndex"`
 }
 
 // Balances call GetBalances API and returns address-balance pair struct.
-func (api *API) Balances(adr []Address) (Balances, error) {
+func (api *API) Balances(adr []Address, seed Trytes) (Balances, error) {
 	r, err := api.GetBalances(adr, 100)
 	if err != nil {
 		return nil, err
@@ -445,9 +445,6 @@ func (api *API) Balances(adr []Address) (Balances, error) {
 
 	bs := make(Balances, 0, len(adr))
 	for i, bal := range r.Balances {
-		if bal <= 0 {
-			continue
-		}
 		b := Balance{
 			Address: adr[i],
 			Value:   bal,
@@ -484,16 +481,14 @@ func (api *API) GetBalances(adr []Address, threshold int64) (*GetBalancesRespons
 
 	r := &GetBalancesResponse{
 		Duration:       resp.Duration,
-		Balances:       make([]int64, len(resp.Balances)),
+		Balances:       make([]string, len(resp.Balances)),
 		Milestone:      resp.Milestone,
 		MilestoneIndex: resp.MilestoneIndex,
 	}
 
 	for i, ba := range resp.Balances {
-		r.Balances[i], err = strconv.ParseInt(ba, 10, 64)
-		if err != nil {
-			return nil, err
-		}
+		r.Balances[i] = ba
+
 	}
 	return r, err
 }

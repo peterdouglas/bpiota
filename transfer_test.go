@@ -25,6 +25,7 @@ package giota
 
 import (
 	"testing"
+	"fmt"
 )
 
 var (
@@ -133,14 +134,16 @@ func TestTransfer2(t *testing.T) {
 		t.Error(err)
 	}
 
-	name, pow := GetBestPoW()
+	name, _ := GetBestPoW()
 	t.Log("using PoW: ", name)
 
 	for i := 0; i < 5; i++ {
 		api := NewAPI(RandomNode(), nil)
-		bdl, err = Send(api, seed, trs, DefaultMinWeightMagnitude, pow)
+		bdl, err = Send(api, seed, trs, DefaultMinWeightMagnitude, nil)
 		if err == nil {
 			break
+		} else {
+			fmt.Println(err)
 		}
 	}
 

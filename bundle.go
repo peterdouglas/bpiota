@@ -28,6 +28,9 @@ import (
 	"errors"
 	"fmt"
 	"time"
+	"github.com/peterdouglas/bp-go"
+	"github.com/decred/base58"
+	"github.com/NebulousLabs/hdkey/eckey"
 )
 
 func pad(orig Trytes, size int) Trytes {
@@ -37,7 +40,7 @@ func pad(orig Trytes, size int) Trytes {
 	for i := len(orig); i < size; i++ {
 		out[i] = '9'
 	}
-	return Trytes(out)
+ 	return Trytes(out)
 }
 
 // Bundle is transactions that are bundled (grouped) together when creating a transfer.
@@ -45,22 +48,29 @@ type Bundle []Transaction
 
 // Add adds a bundle to bundle slice. Elements which are not specified are filled with
 // zeroed trits.
-func (bs *Bundle) Add(num int, address Address, value int64, timestamp time.Time, tag Trytes) {
+func (bs *Bundle) Add(num int, address Address, value *Commitment, timestamp time.Time, tag Trytes) error {
 	if tag == "" {
 		tag = EmptyHash[:27]
 	}
+	v, err := value.Encode()
+	if err != nil {
+		return err
+	}
+
+	blind, err := AsciiToTrytes(base58.Encode(value.EncValue))
 
 	for i := 0; i < num; i++ {
-		var v int64
-
-		if i == 0 {
-			v = value
+		val := Trytes("")
+		if (i == 0) {
+			val = v
 		}
 
 		b := Transaction{
 			SignatureMessageFragment:      emptySig,
 			Address:                       address,
-			Value:                         v,
+			Value:                         pad(val, ValueTrinarySize/3),
+			BlindingFactor:                pad(blind, BlindingTrinarySize/3),
+			RangeProof:                    pad(emptySig, RangeProofTrinarySize/3),
 			ObsoleteTag:                   pad(tag, TagTrinarySize/3),
 			Timestamp:                     timestamp,
 			CurrentIndex:                  int64(len(*bs) - 1),
@@ -69,13 +79,13 @@ func (bs *Bundle) Add(num int, address Address, value int64, timestamp time.Time
 			TrunkTransaction:              EmptyHash,
 			BranchTransaction:             EmptyHash,
 			Tag:                           pad(tag, TagTrinarySize/3),
-			AttachmentTimestamp:           EmptyHash,
 			AttachmentTimestampLowerBound: EmptyHash,
 			AttachmentTimestampUpperBound: EmptyHash,
 			Nonce: EmptyHash,
 		}
 		*bs = append(*bs, b)
 	}
+	return nil
 }
 
 // Finalize filled sigs, bundlehash, and indices elements in bundle.
@@ -96,7 +106,7 @@ func (bs Bundle) Finalize(sig []Trytes) {
 // Hash calculates hash of Bundle.
 func (bs Bundle) Hash() Trytes {
 	k := NewKerl()
-	buf := make(Trits, 243+81*3)
+	buf := make(Trits, 243+243*3)
 
 	for i, b := range bs {
 		getTritsToHash(buf, &b, i, len(bs))
@@ -146,7 +156,7 @@ func (bs Bundle) getValidHash() Trytes {
 
 func getTritsToHash(buf Trits, b *Transaction, i, l int) {
 	copy(buf, Trytes(b.Address).Trits())
-	copy(buf[AddressTrinarySize:], Int2Trits(b.Value, ValueTrinarySize))
+	copy(buf[AddressTrinarySize:],b.Value.Trits())
 	copy(buf[AddressTrinarySize+ValueTrinarySize:], b.ObsoleteTag.Trits())
 	copy(buf[AddressTrinarySize+ValueTrinarySize+ObsoleteTagTrinarySize:], Int2Trits(b.Timestamp.Unix(), TimestampTrinarySize))
 	copy(buf[AddressTrinarySize+ValueTrinarySize+ObsoleteTagTrinarySize+TimestampTrinarySize:], Int2Trits(int64(i), CurrentIndexTrinarySize))   //CurrentIndex
@@ -164,7 +174,7 @@ func (bs Bundle) Categorize(adr Address) (send Bundle, received Bundle) {
 		switch {
 		case b.Address != adr:
 			continue
-		case b.Value >= 0:
+		case b.RangeProof[0:6] != "9999999999999999":
 			received = append(received, b)
 		default:
 			send = append(send, b)
@@ -180,20 +190,47 @@ func (bs Bundle) Categorize(adr Address) (send Bundle, received Bundle) {
 func (bs Bundle) IsValid() error {
 	var total int64
 	sigs := make(map[Address][]Trytes)
+	proofValid := false
+	commitments := make([]bp_go.ECPoint, len(bs))
+	totalEC := bp_go.EC.Zero()
+
+	for i, b := range bs {
+		byteKey, err := Trytes(b.Value).Trits().Bytes()
+		if err != nil {
+			return err
+		}
+		eckey.NewPublicKey(byteKey)
+		pkKey, err := eckey.NewCompressedPublicKey(byteKey[:33])
+		uncom, err := pkKey.Uncompress()
+		x, y := uncom.Coords()
+		commitments[i] = bp_go.ECPoint{
+			X: x,
+			Y: y,
+		}
+
+		totalEC.Add(commitments[i])
+		if err != nil {
+			return err
+		}
+	}
+	if !totalEC.Equal(bp_go.EC.Zero()) {
+		errors.New("The commitments did not add up to zero")
+	}
+
 	for index, b := range bs {
-		total += b.Value
 
 		switch {
 		case b.CurrentIndex != int64(index):
 			return fmt.Errorf("CurrentIndex of index %d is not correct", b.CurrentIndex)
 		case b.LastIndex != int64(len(bs)-1):
 			return fmt.Errorf("LastIndex of index %d is not correct", b.CurrentIndex)
-		case b.Value >= 0:
+		case b.RangeProof[0:6] != "9999999999999999":
 			continue
 		}
 
 		sigs[b.Address] = append(sigs[b.Address], b.SignatureMessageFragment)
 
+		/* Removing long signature functionality for now
 		// Find the subsequent txs with the remaining signature fragment
 		for i := index; i < len(bs)-1; i++ {
 			tx := bs[i+1]
@@ -201,6 +238,22 @@ func (bs Bundle) IsValid() error {
 			// Check if new tx is part of the signature fragment
 			if tx.Address == b.Address && tx.Value == 0 {
 				sigs[tx.Address] = append(sigs[tx.Address], tx.SignatureMessageFragment)
+			}
+		}*/
+		if !proofValid {
+			proof, err := TrytesToAscii(b.RangeProof)
+			if err != nil {
+				return err
+			}
+			rangeProof := new(bp_go.MultiRangeProof)
+			err = rangeProof.Rebuild(proof)
+			if err != nil {
+				return err
+			}
+			valid := bp_go.MRPVerify(rangeProof, commitments)
+			if !valid {
+				err := errors.New("The range proof failed to verify")
+				return err
 			}
 		}
 	}

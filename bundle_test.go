@@ -23,18 +23,13 @@ SOFTWARE.
 */
 package giota
 
-import (
-	"testing"
-	"time"
-)
-
 type tx struct {
 	addr      Address
 	value     int64
 	timestamp string
 }
 
-func TestBundle(t *testing.T) {
+/*func TestBundle(t *testing.T) {
 	tests := []struct {
 		name         string
 		transactions []tx
@@ -97,3 +92,4 @@ func TestBundle(t *testing.T) {
 	}
 
 }
+*/

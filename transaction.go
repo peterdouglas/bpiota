@@ -35,7 +35,7 @@ import (
 type Transaction struct {
 	SignatureMessageFragment      Trytes
 	Address                       Address
-	Value                         int64 `json:",string"`
+	Value                         Trytes `json:",string"`
 	BlindingFactor				  Trytes
 	RangeProof					  Trytes
 	ObsoleteTag                   Trytes
@@ -98,7 +98,7 @@ const (
 	NonceTrinarySize                           = 81
 
 	transactionTrinarySize = SignatureMessageFragmentTrinarySize + AddressTrinarySize +
-		ValueTrinarySize + ObsoleteTagTrinarySize + TimestampTrinarySize +
+		ValueTrinarySize + BlindingTrinarySize + RangeProofTrinarySize + ObsoleteTagTrinarySize + TimestampTrinarySize +
 		CurrentIndexTrinarySize + LastIndexTrinarySize + BundleTrinarySize +
 		TrunkTransactionTrinarySize + BranchTransactionTrinarySize +
 		TagTrinarySize + AttachmentTimestampTrinarySize +
@@ -129,7 +129,7 @@ func checkTx(trytes Trytes) error {
 		return errors.New("invalid transaction " + err.Error())
 	case len(trytes) != transactionTrinarySize/3:
 		return errors.New("invalid trits counts in transaction")
-	case trytes[2279:2295] != "9999999999999999":
+	case trytes[10281:10287] != "9999999999999999":
 		return errors.New("invalid value in transaction")
 	default:
 		return nil
@@ -143,7 +143,9 @@ func (t *Transaction) parser(trits Trits) error {
 	if err != nil {
 		return err
 	}
-	t.Value = trits[ValueTrinaryOffset : ValueTrinaryOffset+ValueTrinarySize].Int()
+	t.Value = trits[ValueTrinaryOffset : ValueTrinaryOffset+ValueTrinarySize].Trytes()
+	t.BlindingFactor = trits[BlindingTrinaryOffset : BlindingTrinaryOffset+BlindingTrinarySize].Trytes()
+	t.RangeProof = trits[RangeProofTrinaryOffset : RangeProofTrinaryOffset+RangeProofTrinarySize].Trytes()
 	t.ObsoleteTag = trits[ObsoleteTagTrinaryOffset : ObsoleteTagTrinaryOffset+ObsoleteTagTrinarySize].Trytes()
 	timestamp := trits[TimestampTrinaryOffset : TimestampTrinaryOffset+TimestampTrinarySize].Int()
 	t.Timestamp = time.Unix(timestamp, 0)
@@ -166,7 +168,9 @@ func (t *Transaction) Trytes() Trytes {
 	tr := make(Trits, transactionTrinarySize)
 	copy(tr, t.SignatureMessageFragment.Trits())
 	copy(tr[AddressTrinaryOffset:], Trytes(t.Address).Trits())
-	copy(tr[ValueTrinaryOffset:], Int2Trits(t.Value, ValueTrinarySize))
+	copy(tr[ValueTrinaryOffset:], t.Value.Trits())
+	copy(tr[BlindingTrinaryOffset:], t.BlindingFactor.Trits())
+	copy(tr[RangeProofTrinaryOffset:], t.RangeProof.Trits())
 	copy(tr[ObsoleteTagTrinaryOffset:], t.ObsoleteTag.Trits())
 	copy(tr[TimestampTrinaryOffset:], Int2Trits(t.Timestamp.Unix(), TimestampTrinarySize))
 	copy(tr[CurrentIndexTrinaryOffset:], Int2Trits(t.CurrentIndex, CurrentIndexTrinarySize))
