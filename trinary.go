@@ -255,6 +255,28 @@ func (t Trits) Bytes() ([]byte, error) {
 	return reverse(b), nil
 }
 
+// JavaTrits - this is a mirror of the trits to bytes implementation from the iri
+func (t Trits) JavaTrits() []byte {
+	const NUMBER_TRITS = 5
+	expectedLength := (len(t) + NUMBER_TRITS-1) / NUMBER_TRITS;
+	output := make([]byte, expectedLength)
+	for i := 0; i < expectedLength; i++  {
+		value := 0
+		var rounds int
+		if len(t) - (i * NUMBER_TRITS) < 5 {
+			rounds = len(t) - (i * NUMBER_TRITS)
+		} else {
+			rounds = NUMBER_TRITS
+		}
+		for j := rounds - 1; j > 0 ; j--  {
+			value = value * 3 + int(t[i * NUMBER_TRITS + j])
+		}
+		output[i] = byte(value)
+
+	}
+	return output
+}
+
 // BytesToTrits converts binary to ternay
 func BytesToTrits(b []byte) (Trits, error) {
 	if len(b) != ByteLength {

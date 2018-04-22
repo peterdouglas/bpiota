@@ -3,14 +3,10 @@ package giota
 import (
 	"github.com/peterdouglas/bp-go"
 	"math/big"
-	"github.com/NebulousLabs/hdkey/eckey"
 	"github.com/decred/dcrd/dcrec/secp256k1"
 	"errors"
-	"crypto/aes"
-	"github.com/ethereum/go-ethereum/common/math"
-	"io"
-	"crypto/rand"
-	"crypto/cipher"
+	"github.com/decred/base58"
+	"fmt"
 )
 
 type PreProof struct {
@@ -38,36 +34,38 @@ type Commitment struct {
 
 func (c *Commitment) Encode() (Trytes, error) {
 
-	pkCompressed, err := eckey.NewPublicKeyCoords(c.Vector.X, c.Vector.Y)
+	pkCompressed := secp256k1.NewPublicKey(c.Vector.X, c.Vector.Y)
+	baseTr, err := AsciiToTrytes(base58.Encode((pkCompressed.SerializeCompressed())))
 	if err != nil {
 		return "", err
 	}
-	pkInt := new(big.Int).SetBytes(pkCompressed.Compress()[:])
-	keyTrit := make([]byte, 48)
-	copy(keyTrit, pkInt.Bytes())
+	fmt.Printf("Base trytes are: %+v\n", base58.Encode((pkCompressed.SerializeCompressed())))
+	/*keyTrit := make([]byte, 48)
+	copy(keyTrit,pkCompressed.SerializeCompressed())
 	trits, err := BytesToTrits(keyTrit)
 	if err != nil {
 		return "", err
 	}
 	c.Trytes = trits.Trytes()
+	byte2 := c.Trytes.Trits().JavaTrits()
+	fmt.Printf("Trytes: %+v\n", c.Trytes)
+
+	fmt.Printf("Byte array 2: %+v\n", byte2)
+	*/
+	c.Trytes = baseTr
 	return c.Trytes, nil
 
 }
 
 func (c *Commitment) Decode() (ECPoint, error) {
-	byteKey, err := c.Trytes.Trits().Bytes()
+	asciKey, err := TrytesToAscii(c.Trytes)
 	if err != nil {
 		return ECPoint{}, err
 	}
+	byteKey := base58.Decode(asciKey)
+	pkKey, err := secp256k1.ParsePubKey(byteKey[:33])
 
-	pkKey, err := eckey.NewCompressedPublicKey(byteKey[:33])
-
-	uncompPk, err := pkKey.Uncompress()
-	if err != nil {
-		return ECPoint{}, err
-	}
-	x, y := uncompPk.Coords()
-	return ECPoint{x, y}, nil
+	return ECPoint{pkKey.GetX(), pkKey.GetX()}, nil
 }
 
 // Generate a single commitment from a commitment struct
@@ -81,41 +79,25 @@ func (c *Commitment) Generate(receiverKey *secp256k1.PublicKey, v, gamma *big.In
 	}
 	c.Blind = gamma
 	// now we encrypt the value so the receiver can recreate the trans
-	block, err := aes.NewCipher(gamma.Bytes())
+	ciphertext, err := secp256k1.Encrypt(receiverKey, v.Bytes())
 	if err != nil {
 		return err
 	}
-
-	encVal := math.PaddedBigBytes(v, aes.BlockSize)
-
-	if len(encVal)%aes.BlockSize != 0 {
-		return errors.New("Encrypted value is not a multiple of the blocksize")
-	}
-
-	ciphertext := make([]byte, aes.BlockSize+len(encVal))
-	iv := ciphertext[:aes.BlockSize]
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-		return err
-	}
-
-	mode := cipher.NewCBCEncrypter(block, iv)
-	mode.CryptBlocks(ciphertext[aes.BlockSize:], encVal)
-
 
 	c.EncValue = ciphertext
 	return nil
 }
 
-
-
 func (p *ProofPrep) GenerateRangeProof(gamma *big.Int) (bp_go.RangeProof, []*big.Int) {
 	valArr := make([]*big.Int, len(*p))
+	blindArr := make([]*big.Int, len(*p))
 	commitArr := make([]bp_go.ECPoint, len(*p))
 	totalEC := bp_go.EC.Zero()
 	total := int64(0)
 
 	for i, proof := range *p {
 		valArr[i] = proof.value
+		blindArr[i] = proof.commitment.Blind
 		bpEC := bp_go.ECPoint{X: proof.commitment.Vector.X, Y: proof.commitment.Vector.Y}
 		commitArr[i] = bpEC
 		totalEC.Add(bpEC)

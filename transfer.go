@@ -94,7 +94,7 @@ func GetInputs(api *API, seed Trytes, start, end int, threshold int64) (Balances
 		return nil, err
 	}
 
-	return api.Balances(adrs)
+	return api.Balances(adrs, seed)
 }
 
 // Transfer is the  data to be transfered by bundles.

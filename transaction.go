@@ -66,9 +66,9 @@ const (
 	AddressTrinaryOffset                  = SignatureMessageFragmentTrinaryOffset + SignatureMessageFragmentTrinarySize
 	AddressTrinarySize                    = 243
 	ValueTrinaryOffset                    = AddressTrinaryOffset + AddressTrinarySize
-	ValueTrinarySize                      = 243
+	ValueTrinarySize                      = 270
 	BlindingTrinaryOffset	              = ValueTrinaryOffset + ValueTrinarySize
-	BlindingTrinarySize           		  = 1830
+	BlindingTrinarySize           		  = 1848
 	RangeProofTrinaryOffset	              = BlindingTrinaryOffset + BlindingTrinarySize
 	RangeProofTrinarySize          		  = 20850
 	ObsoleteTagTrinaryOffset              = RangeProofTrinaryOffset + RangeProofTrinarySize

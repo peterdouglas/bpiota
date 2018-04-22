@@ -33,7 +33,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"sync"
 )
 
@@ -444,10 +443,10 @@ func (api *API) Balances(adr []Address, seed Trytes) (Balances, error) {
 	}
 
 	bs := make(Balances, 0, len(adr))
-	for i, bal := range r.Balances {
+	for i, _ := range r.Balances {
 		b := Balance{
 			Address: adr[i],
-			Value:   bal,
+			//Value:   bal,
 			Index:   i,
 		}
 		bs = append(bs, b)

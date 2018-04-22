@@ -127,7 +127,7 @@ func (bs Bundle) getValidHash() Trytes {
 	for i, b := range bs {
 		getTritsToHash(buf[i*hashedLen:], &b, i, len(bs))
 	}
-
+	var i = 0
 	for {
 		k.Absorb(buf)
 		hashTrits, _ := k.Squeeze(HashSize)
@@ -146,11 +146,13 @@ func (bs Bundle) getValidHash() Trytes {
 
 		if valid {
 			bs[0].ObsoleteTag = buf[offset : offset+ObsoleteTagTrinarySize].Trytes()
+			fmt.Printf("Valid, i = %s", i)
 			return h
 		}
-
+		i++
 		k.Reset()
 		incTrits(buf[offset : offset+ObsoleteTagTrinarySize])
+
 	}
 }
 
