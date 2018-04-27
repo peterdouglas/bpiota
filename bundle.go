@@ -30,7 +30,8 @@ import (
 	"time"
 	"github.com/peterdouglas/bp-go"
 	"github.com/decred/base58"
-	"github.com/NebulousLabs/hdkey/eckey"
+	"log"
+	"strings"
 )
 
 func pad(orig Trytes, size int) Trytes {
@@ -58,7 +59,9 @@ func (bs *Bundle) Add(num int, address Address, value *Commitment, timestamp tim
 	}
 
 	blind, err := AsciiToTrytes(base58.Encode(value.EncValue))
-
+	if err != nil {
+		return err
+	}
 	for i := 0; i < num; i++ {
 		val := Trytes("")
 		if (i == 0) {
@@ -121,8 +124,7 @@ func (bs Bundle) Hash() Trytes {
 // until normalized hash doesn't have any 13
 func (bs Bundle) getValidHash() Trytes {
 	k := NewKerl()
-	hashedLen := BundleTrinaryOffset - AddressTrinaryOffset
-
+	hashedLen := 486
 	buf := make(Trits, hashedLen*len(bs))
 	for i, b := range bs {
 		getTritsToHash(buf[i*hashedLen:], &b, i, len(bs))
@@ -142,8 +144,7 @@ func (bs Bundle) getValidHash() Trytes {
 			}
 		}
 
-		offset := ObsoleteTagTrinaryOffset - AddressTrinaryOffset
-
+		offset := 243+81
 		if valid {
 			bs[0].ObsoleteTag = buf[offset : offset+ObsoleteTagTrinarySize].Trytes()
 			fmt.Printf("Valid, i = %s", i)
@@ -158,12 +159,13 @@ func (bs Bundle) getValidHash() Trytes {
 
 func getTritsToHash(buf Trits, b *Transaction, i, l int) {
 	copy(buf, Trytes(b.Address).Trits())
-	copy(buf[AddressTrinarySize:],b.Value.Trits())
-	copy(buf[AddressTrinarySize+ValueTrinarySize:], b.ObsoleteTag.Trits())
-	copy(buf[AddressTrinarySize+ValueTrinarySize+ObsoleteTagTrinarySize:], Int2Trits(b.Timestamp.Unix(), TimestampTrinarySize))
-	copy(buf[AddressTrinarySize+ValueTrinarySize+ObsoleteTagTrinarySize+TimestampTrinarySize:], Int2Trits(int64(i), CurrentIndexTrinarySize))   //CurrentIndex
-	copy(buf[AddressTrinarySize+ValueTrinarySize+ObsoleteTagTrinarySize+TimestampTrinarySize+CurrentIndexTrinarySize:], Int2Trits(int64(l-1), LastIndexTrinarySize)) //LastIndex
+	copy(buf[243:], Int2Trits(0, 81))
+	copy(buf[243+81:], b.ObsoleteTag.Trits())
+	copy(buf[243+81+81:], Int2Trits(b.Timestamp.Unix(), TimestampTrinarySize))
+	copy(buf[243+81+81+27:], Int2Trits(int64(i), CurrentIndexTrinarySize))   //CurrentIndex
+	copy(buf[243+81+81+27+27:], Int2Trits(int64(l-1), LastIndexTrinarySize)) //LastIndex
 }
+
 
 // Categorize categorizes a list of transfers into sent and received. It is important to
 // note that zero value transfers (which for example, are being used for storing
@@ -176,7 +178,7 @@ func (bs Bundle) Categorize(adr Address) (send Bundle, received Bundle) {
 		switch {
 		case b.Address != adr:
 			continue
-		case b.RangeProof[0:6] != "9999999999999999":
+		case b.RangeProof[0:6] != "9999999":
 			received = append(received, b)
 		default:
 			send = append(send, b)
@@ -193,27 +195,21 @@ func (bs Bundle) IsValid() error {
 	var total int64
 	sigs := make(map[Address][]Trytes)
 	proofValid := false
-	commitments := make([]bp_go.ECPoint, len(bs))
+	commitments := make([]Commitment, len(bs))
 	totalEC := bp_go.EC.Zero()
 
 	for i, b := range bs {
-		byteKey, err := Trytes(b.Value).Trits().Bytes()
+		commitments[i].Trytes = Trytes(b.Value)
+		ecPoint, err :=commitments[i].Decode()
+
 		if err != nil {
 			return err
-		}
-		eckey.NewPublicKey(byteKey)
-		pkKey, err := eckey.NewCompressedPublicKey(byteKey[:33])
-		uncom, err := pkKey.Uncompress()
-		x, y := uncom.Coords()
-		commitments[i] = bp_go.ECPoint{
-			X: x,
-			Y: y,
 		}
 
-		totalEC.Add(commitments[i])
-		if err != nil {
-			return err
-		}
+		totalEC.Add(bp_go.ECPoint{
+			X: ecPoint.X,
+			Y: ecPoint.Y,
+		})
 	}
 	if !totalEC.Equal(bp_go.EC.Zero()) {
 		errors.New("The commitments did not add up to zero")
@@ -226,7 +222,8 @@ func (bs Bundle) IsValid() error {
 			return fmt.Errorf("CurrentIndex of index %d is not correct", b.CurrentIndex)
 		case b.LastIndex != int64(len(bs)-1):
 			return fmt.Errorf("LastIndex of index %d is not correct", b.CurrentIndex)
-		case b.RangeProof[0:6] != "9999999999999999":
+		case b.RangeProof[0:6] == "999999":
+			log.Print(b.RangeProof[0:6])
 			continue
 		}
 
@@ -243,17 +240,23 @@ func (bs Bundle) IsValid() error {
 			}
 		}*/
 		if !proofValid {
-			proof, err := TrytesToAscii(b.RangeProof)
+
+			tempProof := strings.TrimRight(string(b.RangeProof), "9")
+			if len(tempProof) % 2 != 0 {
+				tempProof += "9"
+			}
+			proof, err := TrytesToAscii(Trytes(tempProof))
 			if err != nil {
 				return err
 			}
-			rangeProof := new(bp_go.MultiRangeProof)
+			rangeProof := bp_go.RangeProof{}
 			err = rangeProof.Rebuild(proof)
 			if err != nil {
 				return err
 			}
-			valid := bp_go.MRPVerify(rangeProof, commitments)
-			if !valid {
+
+
+			if !bp_go.RPVerify(rangeProof) {
 				err := errors.New("The range proof failed to verify")
 				return err
 			}

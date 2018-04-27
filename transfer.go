@@ -234,9 +234,7 @@ func setupInputs(api *API, seed Trytes, inputs []AddressInfo, total int64) (Bala
 
 		//  Validate the inputs by calling getBalances (in call to Balances)
 		bals, err = api.Balances(adrs, seed)
-		if err != nil {
-			return nil, nil, err
-		}
+
 	}
 
 	// Return not enough balance error
@@ -319,9 +317,11 @@ func addRemainder(receiverPub *secp256k1.PublicKey, secInt *big.Int, preProof *P
 		val := big.NewInt(-bal.Value)
 		// generate the commitment for the remainder
 		comm := GenerateCommitment(receiverPub, secInt, val)
+
+		addr, err := bal.Address.Address()
 		tempProof := PreProof{
 			commitment: comm,
-			receiver:   &bal.Address,
+			receiver:   &addr,
 			sender:     nil,
 			value:      val,
 		}
@@ -329,7 +329,7 @@ func addRemainder(receiverPub *secp256k1.PublicKey, secInt *big.Int, preProof *P
 		*preProof = append(*preProof, tempProof)
 
 		// Add input as bundle entry
-		bundle.Add(1, bal.Address, comm, time.Now(), EmptyHash)
+		bundle.Add(1, addr, comm, time.Now(), EmptyHash)
 
 		// If there is a remainder value add extra output to send remaining funds to
 		if remain := bal.Value - total; remain > 0 {
@@ -342,11 +342,15 @@ func addRemainder(receiverPub *secp256k1.PublicKey, secInt *big.Int, preProof *P
 					return err
 				}
 			}
+			pubkey, err := adr.DecodePubKey()
 
+			if err != nil {
+				return err
+			}
 			val := big.NewInt(remain)
 
 			// generate the commitment for the remainder
-			comm := GenerateCommitment(receiverPub, secInt, val)
+			comm := GenerateCommitment(secp256k1.NewPublicKey(pubkey.Coords()), secInt, val)
 
 
 			tempProof := PreProof{
@@ -495,6 +499,10 @@ func SendTrytes(api *API, depth int64, trytes []Transaction, mwm int64, pow PowF
 	}
 
 	// Broadcast and store tx
+	err = api.StoreTransactions(trytes)
+	if err != nil {
+		return err
+	}
 	return api.BroadcastTransactions(trytes)
 }
 

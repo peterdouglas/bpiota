@@ -125,8 +125,8 @@ func TestEncoding(t *testing.T) {
 }
 
 func TestAddressLength(t *testing.T) {
-	seed2, err := ToTrytes("CLBHL9DOQXUHBWORNBHNPUB9JQUHYLLXXCJQRJVRJXYHAAISJPTDA9ZFVLPPNAHLDNMDDMGYXEDVROMQV")
-	//seed2, err := ToTrytes("CIXIFADSMGPA9HERAVAZMCUSEDJHKDKVYIEZNCAIYJQNHZNSHUEDSREQYIIMIQLTRPKPAFTAJX9FNNZBK")
+	//seed2, err := ToTrytes("CLBHL9DOQXUHBWORNBHNPUB9JQUHYLLXXCJQRJVRJXYHAAISJPTDA9ZFVLPPNAHLDNMDDMGYXEDVROMQV")
+	seed2, err := ToTrytes("CIXIFADSMGPA9HERAVAZMCUSEDJHKDKVYIEZNCAIYJQNHZNSHUEDSREQYIIMIQLTRPKPAFTAJX9FNNZBK")
 	if err != nil {
 		t.Error(err)
 	}
@@ -142,7 +142,8 @@ func TestAddressLength(t *testing.T) {
 		addr = addr.CreateAddress(seed2, i)
 
 		length := len(addr)
-		fmt.Printf("Address %s is %s%s\n", i, addr, addr.Checksum())
+		//fmt.Printf("Address %s is %s%s\n", i, addr, addr.Checksum())
+		fmt.Printf("\"%s\",", addr)
 		if length < min {
 			min = length
 		}

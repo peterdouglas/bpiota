@@ -129,8 +129,9 @@ func checkTx(trytes Trytes) error {
 		return errors.New("invalid transaction " + err.Error())
 	case len(trytes) != transactionTrinarySize/3:
 		return errors.New("invalid trits counts in transaction")
-	case trytes[10281:10287] != "9999999999999999":
-		return errors.New("invalid value in transaction")
+	//case trytes[10296:10302] != "999999":
+	//	println(trytes[10296:10302])
+	//	return errors.New("invalid value in transaction")
 	default:
 		return nil
 	}

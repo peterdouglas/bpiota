@@ -33,7 +33,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"sync"
+	"github.com/decred/dcrd/dcrec/secp256k1"
+	"math/big"
+	"github.com/decred/base58"
 )
 
 // PublicNodes is a list of known public nodes from http://iotasupport.com/lightwallet.shtml.
@@ -403,8 +407,9 @@ func (api *API) GetInclusionStates(tx []Trytes, tips []Trytes) (*GetInclusionSta
 
 // Balance is the total balance of an Address.
 type Balance struct {
-	Address Address
+	Address AddressInfo
 	Value   int64
+	Message Trytes
 	Index   int
 }
 
@@ -443,12 +448,57 @@ func (api *API) Balances(adr []Address, seed Trytes) (Balances, error) {
 	}
 
 	bs := make(Balances, 0, len(adr))
-	for i, _ := range r.Balances {
+	for i, bal := range r.Balances {
+		trimBal := strings.Trim(bal, "[]")
+		if trimBal == "0" {
+			continue
+		}
+
+
+		if strings.HasPrefix(trimBal,"999999999999") {
+			continue
+		}
+
+		trimR := strings.Split(strings.TrimRight(trimBal, "9"), ",")[0]
+		balTryt, err := ToTrytes(trimR)
+
+		if err != nil {
+			return nil, err
+		}
+
+		addInf := AddressInfo{
+			Seed:  seed,
+			Sk:    nil,
+			Index: i+1,
+		}
+
+		addInf.Secret()
+
+
+		asciVal, err := TrytesToAscii(balTryt)
+		if err != nil {
+			return nil,  err
+		}
+		sKey, err := addInf.Sk.SecretKey()
+		if err != nil {
+			return nil, err
+		}
+
+		decKey, _ :=secp256k1.PrivKeyFromBytes(sKey[:])
+		byteVal := base58.Decode(asciVal)
+		secret, err := secp256k1.Decrypt(decKey, byteVal )
+		if err != nil {
+			return nil, err
+		}
+
 		b := Balance{
-			Address: adr[i],
-			//Value:   bal,
+			Address: addInf,
+			Value:  new(big.Int).SetBytes(secret).Int64(),
+			Message:  balTryt,
 			Index:   i,
 		}
+		fmt.Printf("Value is %s\n", b.Value)
+
 		bs = append(bs, b)
 	}
 	return bs, nil

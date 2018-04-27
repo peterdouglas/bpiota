@@ -34,7 +34,7 @@ const (
 	HashSize                  = 243
 	Depth                     = 3
 	Radix                     = 3
-	DefaultMinWeightMagnitude = 14
+	DefaultMinWeightMagnitude = 0
 )
 
 // Units for iota token.

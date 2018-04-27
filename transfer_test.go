@@ -35,6 +35,7 @@ var (
 
 func init() {
 	ts := "CLBHL9DOQXUHBWORNBHNPUB9JQUHYLLXXCJQRJVRJXYHAAISJPTDA9ZFVLPPNAHLDNMDDMGYXEDVROMQV"
+	//ts := "CIXIFADSMGPA9HERAVAZMCUSEDJHKDKVYIEZNCAIYJQNHZNSHUEDSREQYIIMIQLTRPKPAFTAJX9FNNZBK"
 	if ts == "" {
 		skipTransferTest = true
 		return
@@ -105,7 +106,7 @@ func TestTransfer2(t *testing.T) {
 	trs := []Transfer{
 		Transfer{
 			Address: "BXHANKTHPJUPUVZOLJPZPQLDZPWVSBPGLMLSOYFZM9RSHVZRRBZJZJDZYTNRHXBVMQKFT9DVKVNDPCGC9ZXXTZCTMB",
-			Value:   20,
+			Value:   1500000,
 			Tag:     "MOUDAMEPO",
 		},
 	}
@@ -123,13 +124,14 @@ func TestTransfer2(t *testing.T) {
 		t.Error(err)
 	}
 
-	if len(bdl) < 3 {
+	if len(bdl) < 2 {
 		for _, tx := range bdl {
 			t.Log(tx.Trytes())
 		}
 		t.Fatal("PrepareTransfers is incorrect len(bdl)=", len(bdl))
 	}
 
+	//spew.Dump(bdl)
 	if err = bdl.IsValid(); err != nil {
 		t.Error(err)
 	}

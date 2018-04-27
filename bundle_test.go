@@ -23,13 +23,20 @@ SOFTWARE.
 */
 package giota
 
+import (
+	"testing"
+	"time"
+	"github.com/decred/dcrd/dcrec/secp256k1"
+	"math/big"
+)
+
 type tx struct {
 	addr      Address
 	value     int64
 	timestamp string
 }
 
-/*func TestBundle(t *testing.T) {
+func TestBundle(t *testing.T) {
 	tests := []struct {
 		name         string
 		transactions []tx
@@ -59,7 +66,7 @@ type tx struct {
 					timestamp: "2017-03-11 12:25:28 +0900 JST",
 				},
 			},
-			hash: "TSIIPJNKJCKOLFD9P9UZCU9ZGAIFUOUASJXLHNQFGEWUHCSCPTXMTEUBAYHHNSXRMJTAZ99GTOOPC9BUW",
+			hash: "BSCPJUZ9PDGW9JDRAN99XXFOIMZVGUFJTLEXGOCUWFYNBEWWSZBRZRRYU9OWRX9FAIGC9ZRIHLVPRTPBW",
 		},
 	}
 
@@ -71,8 +78,16 @@ type tx struct {
 			if err != nil {
 				t.Fatal(err)
 			}
+			addr := Address(tx.addr)
+			pubKey, err := addr.DecodePubKey()
+			sepKey := secp256k1.NewPublicKey(pubKey.Coords())
+			if err != nil {
+				t.Error(err)
+			}
+			val := big.NewInt(tx.value)
+			comm := GenerateCommitment(sepKey, big.NewInt(1), val)
 
-			bs.Add(1, tx.addr, tx.value, parsedTime, "")
+			bs.Add(1, tx.addr, comm, parsedTime, "")
 		}
 
 		if bs.Hash() != tt.hash {
@@ -92,4 +107,3 @@ type tx struct {
 	}
 
 }
-*/

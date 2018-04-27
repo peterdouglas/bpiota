@@ -7,7 +7,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/iotaledger/giota"
+	"github.com/peterdouglas/giota"
 
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -47,7 +47,7 @@ func main() {
 
 	println("Getting balances")
 	// GetInputs(API, seed, start index, end index, threshold, security level)
-	inputs, err := giota.GetInputs(api, seedT, 0, offset, 0, slevel)
+	inputs, err := giota.GetInputs(api, seedT, 0, offset, 0)
 	if err != nil {
 		log.Fatal(err)
 	}

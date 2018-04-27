@@ -54,8 +54,9 @@ func TestAPIGetNodeInfo(t *testing.T) {
 
 }
 
-/*
+
 func TestAPIGetNeighbors(t *testing.T) {
+	var server = RandomNode()
 	api := NewAPI(server, nil)
 
 	_, err := api.GetNeighbors()
@@ -65,6 +66,7 @@ func TestAPIGetNeighbors(t *testing.T) {
 }
 
 func TestAPIAddNeighbors(t *testing.T) {
+	var server = RandomNode()
 	api := NewAPI(server, nil)
 
 	resp, err := api.AddNeighbors([]string{"udp://127.0.0.1:14265/"})
@@ -76,6 +78,7 @@ func TestAPIAddNeighbors(t *testing.T) {
 }
 
 func TestAPIRemoveNeighbors(t *testing.T) {
+	var server = RandomNode()
 	api := NewAPI(server, nil)
 
 	resp, err := api.RemoveNeighbors([]string{"udp://127.0.0.1:14265/"})
@@ -86,6 +89,7 @@ func TestAPIRemoveNeighbors(t *testing.T) {
 	}
 }
 func TestAPIGetTips(t *testing.T) {
+	var server = RandomNode()
 	api := NewAPI(server, nil)
 
 	resp, err := api.GetTips()
@@ -98,7 +102,7 @@ func TestAPIGetTips(t *testing.T) {
 	}
 	t.Log(len(resp.Hashes))
 }
-*/
+
 func TestAPIFindTransactions(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping in short mode")
@@ -107,7 +111,7 @@ func TestAPIFindTransactions(t *testing.T) {
 	var err error
 	var resp *FindTransactionsResponse
 
-	ftr := &FindTransactionsRequest{Bundles: []Trytes{"DEXRPLKGBROUQMKCLMRPG9HFKCACDZ9AB9HOJQWERTYWERJNOYLW9PKLOGDUPC9DLGSUH9UHSKJOASJRU"}}
+	ftr := &FindTransactionsRequest{Bundles: []Trytes{"COVJKRIDLPHVDHGEPIKJHYDYBGUVCEXHSIOLYBSQHAIVCCCKSVIELVKKOWJJZBVBLPCXAYXF9BXDGQXIA"}}
 	for i := 0; i < 5; i++ {
 		var server = RandomNode()
 		api := NewAPI(server, nil)
@@ -137,7 +141,7 @@ func TestAPIGetTrytes(t *testing.T) {
 		var server = RandomNode()
 		api := NewAPI(server, nil)
 
-		resp, err = api.GetTrytes([]Trytes{})
+		resp, err = api.GetTrytes([]Trytes{"XQAGLEWOETYZNUSUJO9FBYODBDVSULIZCOXBCUG9ZGVAJKRWGMEIHRODGGBOEFUYQIHSHLOAPZL9XMATW","LTAJISGTRSHOZUIJHRZGVESDESVJIPYBVF9JN9CRAZWVFOACKRVSSDJEYMSQKYRMWEVCRUDOZWIROPPCC","QNQRZZFZCHMOUTUVHCTIYKLSGVJQZ9MZ9VGSFMTSSNDUDLKTUZYQEMMQTIVVTSYZFLKDXJXYYUIHQTSIG","RQCEPQFKGMFOLEAU9CGSPHSDGGDKLBZJXCGKTHMKBSVOTSVDCZOIJAPGWCJRCVZIMON9JOTFHDKBL9ZKL","RWDSPVURZLDYG9BZPBYBG9KFDQWUNRCXYANVWEINRECOSWVE9KLFRXVDFKUREKLTBKGKNPQBLUVZV9QUX","PPXBIBBYLOKNTMHO9UPQGCZJBZKOODFIFJRQTX9WCFMRXOHUXTMXPZZLRWXZZWDVDOZZHJVJJP9GSLFPS","YVWKHCOQGHPQHZNWQZG9LLRESJYFKCLFIQEEYVKGVKTTSOQVUFDPAAJHILSMFDTBQPOYZSENCWUONJSVK"})
 		if err == nil {
 			break
 		}
@@ -161,7 +165,7 @@ func TestAPIGetInclusionStates(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		var server = RandomNode()
 		api := NewAPI(server, nil)
-		resp, err = api.GetInclusionStates([]Trytes{}, []Trytes{})
+		resp, err = api.GetInclusionStates([]Trytes{}, []Trytes{"RGSGVBKUIAYUJOQBIBQXAOQEALT9GLNPXSFUUVZGKLLUOKUTM9JGYXVOHOZLLPFQBVESPPMRP9VGIN9VJ", "WOCURBB9ZICH9DVXUBFSLFMDG9OLQFIEGVTIRIVSQR99JFOUC9YEYNKPLGTTSIAMZHOURXJBZWRYZUEZD", "ZKBTGPWLBDNCKDLCCSIRQLSBAKIGWJVRFKQCNNDEEKQUDUNRVUNS9VQJDNQYLIEAPATMSURNNWCYPKLUX"})
 		if err == nil {
 			break
 		}
@@ -186,7 +190,7 @@ func TestAPIGetBalances(t *testing.T) {
 		var server = RandomNode()
 		api := NewAPI(server, nil)
 
-		resp, err = api.GetBalances([]Address{}, 100)
+		resp, err = api.GetBalances([]Address{"QHOCNJCAKSCMCPSYPORZYPUXKIGOACBNKMDOTMURVCGHGVSMOTDXCIMHYVGYWCRQFMJNREYDLHXKVGXE9","FQLSSVMTIPCTRAR9JERPEAYUOHZAYHHEJPJEFXPWBDNVJJAJGKXOCLJKUMHUTPKBFMIIHWHUBXFUSXGD9","HJIWVLNGFJH9YER9MVR9GM99VOFURCNYAPHQODMGLVCNZAIHCSONLYQRYRUUWJJUYKWCVIYOB9OPNNDD9","QMGYVOWERZLAWFKLJERCCWS9IPSTYWBCQOBNCJICYFOVLBMZMHVJQSDTXZDQPHMPSECXWFMHELBNGVWE9","ZNHLPRXCRXHLPMWTRYUZRCZWAQUWWSZURBNFP9SRWLRJZBMNBKEYOPXVCFATZPMPVLQHKHBIRKID9TUC9"}, 100)
 		if err == nil {
 			break
 		}
@@ -223,6 +227,7 @@ func TestAPIGetTransactionsToApprove(t *testing.T) {
 	case resp.BranchTransaction == "" || resp.TrunkTransaction == "":
 		t.Errorf("GetTransactionsToApprove() return empty branch and/or trunk transactions\n%#v", resp)
 	}
+	t.Log(resp)
 }
 
 func TestAPIGetLatestInclusion(t *testing.T) {
@@ -258,7 +263,7 @@ func TestAPICheckConsistency(t *testing.T) {
 	var server = RandomNode()
 	api := NewAPI(server, nil)
 
-	resp, err := api.CheckConsistency([]Trytes{"NLNRYUTSLRQONSQEXBAJI9AIOJOEEJDOFJTETPFMB9AEEPUDIXXOTKXG9BYALEXOMSUYJEJSCZTY99999"})
+	resp, err := api.CheckConsistency([]Trytes{"MLIVZXIFEZRGHSTJTRZDLGRQECEQJLLUXPXSEEBEIO9SAB9YKCPXIJNGSGVHIHBUEANBCSEPUFXXEBUFY"})
 
 	switch {
 	case err != nil:
