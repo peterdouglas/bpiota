@@ -25,7 +25,10 @@ SOFTWARE.
 
 package giota
 
-import "testing"
+import (
+    "testing"
+    "fmt"
+)
 
 func TestAPIGetNodeInfo(t *testing.T) {
 	if testing.Short() {
@@ -190,7 +193,7 @@ func TestAPIGetBalances(t *testing.T) {
 		var server = RandomNode()
 		api := NewAPI(server, nil)
 
-		resp, err = api.GetBalances([]Address{"QHOCNJCAKSCMCPSYPORZYPUXKIGOACBNKMDOTMURVCGHGVSMOTDXCIMHYVGYWCRQFMJNREYDLHXKVGXE9","FQLSSVMTIPCTRAR9JERPEAYUOHZAYHHEJPJEFXPWBDNVJJAJGKXOCLJKUMHUTPKBFMIIHWHUBXFUSXGD9","HJIWVLNGFJH9YER9MVR9GM99VOFURCNYAPHQODMGLVCNZAIHCSONLYQRYRUUWJJUYKWCVIYOB9OPNNDD9","QMGYVOWERZLAWFKLJERCCWS9IPSTYWBCQOBNCJICYFOVLBMZMHVJQSDTXZDQPHMPSECXWFMHELBNGVWE9","ZNHLPRXCRXHLPMWTRYUZRCZWAQUWWSZURBNFP9SRWLRJZBMNBKEYOPXVCFATZPMPVLQHKHBIRKID9TUC9"}, 100)
+		resp, err = api.GetBalances([]Address{"Q9VTJLJD9FJORLXLJEINHAKLPOJQOQDZKUD9MWDEEH9CQLLBRYWZ9OIKHDFOHYQIXXCGACDGTYTBBQIC9"}, 100)
 		if err == nil {
 			break
 		}
@@ -201,6 +204,20 @@ func TestAPIGetBalances(t *testing.T) {
 	}
 
 	t.Logf("GetBalances() = %#v", resp)
+}
+
+func TestGetDecodedBalances(t *testing.T) {
+    var server = RandomNode()
+    api := NewAPI(server, nil)
+    bals, err := GetInputs(api, seed, 0, 200, 100)
+    if err != nil {
+        t.Error(err)
+    }
+
+   for _, bal := range bals {
+       addr, _ := bal.Address.Address()
+       fmt.Printf("The address %v has a balance of %v\n", addr, bal.Value)
+   }
 }
 
 func TestAPIGetTransactionsToApprove(t *testing.T) {

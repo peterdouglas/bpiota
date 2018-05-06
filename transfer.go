@@ -37,6 +37,7 @@ import (
 	"math/big"
 	"github.com/peterdouglas/bp-go"
 	"github.com/decred/dcrd/dcrec/secp256k1"
+	"sync"
 )
 
 // (3^27-1)/2
@@ -44,6 +45,8 @@ const maxTimestampTrytes = "MMMMMMMMM"
 
 // Number of random walks to perform. Currently IRI defaults to a range of 5 to 27
 const DefaultNumberOfWalks = 5
+
+var waitGroup sync.WaitGroup
 
 // GetUsedAddress generates a new address which is not found in the tangle
 // and returns its new address and used addresses.
@@ -65,6 +68,7 @@ func GetUsedAddress(api *API, seed Trytes) (Address, []Address, error) {
 		}
 
 		if len(resp.Hashes) == 0 {
+			fmt.Printf("Free address was found at %v\n", index)
 			return adr, all, nil
 		}
 
@@ -153,9 +157,14 @@ func addOutputs(secInt *big.Int, receiverPub *secp256k1.PublicKey, preProof *Pro
 			value:      val,
 		}
 
-		bundle.Add(nsigs, tr.Address, comm, time.Now(), tr.Tag)
+
+		rp := bp_go.RPProveTrans(comm.Blind, val)
+		serRP, _ := rp.Serialize()
+		bundle.Add(nsigs, tr.Address, comm, time.Now(), serRP, tr.Tag)
 
 		*preProof = append(*preProof, tempPre)
+
+
 
 	}
 	return bundle, frags
@@ -210,7 +219,7 @@ func setupInputs(api *API, seed Trytes, inputs []AddressInfo, total int64) (Bala
 		//  confirm that the inputs exceed the threshold
 
 		// If inputs with enough balance
-		bals, err = GetInputs(api, seed, 0, 100, total)
+		bals, err = GetInputs(api, seed, 0, 100, 100)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -250,7 +259,6 @@ func setupInputs(api *API, seed Trytes, inputs []AddressInfo, total int64) (Bala
 func PrepareTransfers(api *API, seed Trytes, trs []Transfer, inputs []AddressInfo, remainder Address) (Bundle, error) {
 	var err error
 	// TODO - change to be dynamic to allow smaller or larger sigs
-	bp_go.EC = bp_go.NewECPrimeGroupKey(2)
 	var total int64 = 0
 
 	// Calculate the total here as we need it for the inputs
@@ -300,7 +308,7 @@ func PrepareTransfers(api *API, seed Trytes, trs []Transfer, inputs []AddressInf
 	}
 
 	bundle.Finalize(frags)
-	err = signInputs(&preProof, secInt, inputs, bundle, seed)
+	err = signInputs(&preProof, inputs, bundle, seed)
 	return bundle, err
 }
 
@@ -316,8 +324,8 @@ func addRemainder(receiverPub *secp256k1.PublicKey, secInt *big.Int, preProof *P
 		var err error
 		val := big.NewInt(-bal.Value)
 		// generate the commitment for the remainder
-		comm := GenerateCommitment(receiverPub, secInt, val)
 
+		comm := GenerateCommitment(receiverPub, secInt, val)
 		addr, err := bal.Address.Address()
 		tempProof := PreProof{
 			commitment: comm,
@@ -329,7 +337,7 @@ func addRemainder(receiverPub *secp256k1.PublicKey, secInt *big.Int, preProof *P
 		*preProof = append(*preProof, tempProof)
 
 		// Add input as bundle entry
-		bundle.Add(1, addr, comm, time.Now(), EmptyHash)
+		bundle.Add(1, addr, comm, time.Now(), "", EmptyHash)
 
 		// If there is a remainder value add extra output to send remaining funds to
 		if remain := bal.Value - total; remain > 0 {
@@ -348,7 +356,7 @@ func addRemainder(receiverPub *secp256k1.PublicKey, secInt *big.Int, preProof *P
 				return err
 			}
 			val := big.NewInt(remain)
-
+            fmt.Printf("The remainder val is %v, and the address is %v\n", val.Int64(), adr)
 			// generate the commitment for the remainder
 			comm := GenerateCommitment(secp256k1.NewPublicKey(pubkey.Coords()), secInt, val)
 
@@ -362,8 +370,12 @@ func addRemainder(receiverPub *secp256k1.PublicKey, secInt *big.Int, preProof *P
 
 			*preProof = append(*preProof, tempProof)
 
+			rp := bp_go.RPProveTrans(comm.Blind, val)
+
+			serRP, _ := rp.Serialize()
+
 			// Remainder bundle entry
-			bundle.Add(1, adr, comm, time.Now(), EmptyHash)
+			bundle.Add(1, adr, comm, time.Now(), serRP, EmptyHash)
 			return nil
 		}
 
@@ -376,26 +388,19 @@ func addRemainder(receiverPub *secp256k1.PublicKey, secInt *big.Int, preProof *P
 	return nil
 }
 
-func signInputs(preProofs *ProofPrep, secInt *big.Int, inputs []AddressInfo, bundle Bundle, seed Trytes) error {
+func signInputs(preProofs *ProofPrep, inputs []AddressInfo, bundle Bundle, seed Trytes) error {
 	//  Get the normalized bundle hash
 	nHash := bundle.Hash()
 
 	sha256.New()
 	hash := sha256.Sum256([]byte(nHash))
-	proof, valArr := preProofs.GenerateRangeProof(secInt)
-	strProof, err := proof.Serialize()
-	if err != nil {
-		return err
-	}
-	tryteProof, err := AsciiToTrytes(strProof)
-	if err != nil {
-		return err
-	}
+	valArr := preProofs.GetVals()
+
 	// SIGNING OF INPUTS
 	// Here we do the actual signing of the inputs. Iterate over all bundle transactions,
 	// find the inputs, get the corresponding private key, and calculate signatureFragment
 	for i, bd := range bundle {
-		if valArr[i].Sign()  >= 0 {
+		if valArr[i].Sign()  <= 0 {
 			continue
 		}
 
@@ -434,7 +439,6 @@ func signInputs(preProofs *ProofPrep, secInt *big.Int, inputs []AddressInfo, bun
 
 		// Calculate the new signatureFragment with the first bundle fragment
 		bundle[i].SignatureMessageFragment = pad(tryteSig, sigSize)
-		bundle[i].RangeProof = pad(tryteProof, RangeProofTrinarySize/3)
 
 	}
 	return nil

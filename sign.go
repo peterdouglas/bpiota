@@ -142,7 +142,7 @@ func IsValidSig(address Address, signatureFragments []Trytes, bundleHash Trytes)
 		sha256.New()
 		hash := sha256.Sum256([]byte(bundleHash))
 		err = schnorr.Verify(rebSig, uncompPk, hash[:]); if err != nil {
-			log.Fatalf("The error is: %s\nThe hash is %s and the public key is %s", err, bundleHash, uncompPk.Compress())
+			log.Fatalf("The error is: %s\nThe hash is %s and the public key is %v", err, bundleHash, uncompPk.Compress())
 		}
 	}
 

@@ -153,7 +153,7 @@ func TestAddressLength(t *testing.T) {
 		}
 
 	}
-	fmt.Printf("The longest key is %s and the shortest key is %s", max, min)
+	fmt.Printf("The longest key is %v and the shortest key is %v", max, min)
 
 }
 

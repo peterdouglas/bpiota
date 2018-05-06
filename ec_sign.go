@@ -125,7 +125,7 @@ func AsciiToTrytes(input string) (Trytes, error) {
 
 	for key, charCode := range input {
 		if charCode > 255 {
-			err = fmt.Errorf("Error, char %s was above 255 in position %s\n", charCode, key)
+			err = fmt.Errorf("Error, char %v was above 255 in position %v\n", charCode, key)
 			err.Error()
 		} else {
 			firstVal := charCode % 27

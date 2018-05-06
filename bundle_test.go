@@ -87,7 +87,7 @@ func TestBundle(t *testing.T) {
 			val := big.NewInt(tx.value)
 			comm := GenerateCommitment(sepKey, big.NewInt(1), val)
 
-			bs.Add(1, tx.addr, comm, parsedTime, "")
+			bs.Add(1, tx.addr, comm, parsedTime, "","")
 		}
 
 		if bs.Hash() != tt.hash {

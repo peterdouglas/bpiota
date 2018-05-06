@@ -44,6 +44,7 @@ import (
 var (
 	PublicNodes = []string{
 		"http://localhost:14265",
+		"http://localhost:14266",
 	}
 )
 
@@ -450,10 +451,9 @@ func (api *API) Balances(adr []Address, seed Trytes) (Balances, error) {
 	bs := make(Balances, 0, len(adr))
 	for i, bal := range r.Balances {
 		trimBal := strings.Trim(bal, "[]")
-		if trimBal == "0" {
+		if strings.Contains(trimBal, "0") {
 			continue
 		}
-
 
 		if strings.HasPrefix(trimBal,"999999999999") {
 			continue
@@ -497,7 +497,7 @@ func (api *API) Balances(adr []Address, seed Trytes) (Balances, error) {
 			Message:  balTryt,
 			Index:   i,
 		}
-		fmt.Printf("Value is %s\n", b.Value)
+		fmt.Printf("Value is %v\n", b.Value)
 
 		bs = append(bs, b)
 	}

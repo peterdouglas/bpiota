@@ -72,7 +72,7 @@ func (c *Commitment) Decode() (ECPoint, error) {
 	byteKey := base58.Decode(asciKey)
 	pkKey, err := secp256k1.ParsePubKey(byteKey[:33])
 
-	return ECPoint{pkKey.GetX(), pkKey.GetX()}, nil
+	return ECPoint{pkKey.GetX(), pkKey.GetY()}, nil
 }
 
 // Generate a single commitment from a commitment struct
@@ -95,7 +95,7 @@ func (c *Commitment) Generate(receiverKey *secp256k1.PublicKey, v, gamma *big.In
 	return nil
 }
 
-func (p *ProofPrep) GenerateRangeProof(gamma *big.Int) (bp_go.RangeProof, []*big.Int) {
+func (p *ProofPrep) GetVals() ([]*big.Int) {
 	valArr := make([]*big.Int, len(*p))
 	blindArr := make([]*big.Int, len(*p))
 	commitArr := make([]bp_go.ECPoint, len(*p))
@@ -114,7 +114,6 @@ func (p *ProofPrep) GenerateRangeProof(gamma *big.Int) (bp_go.RangeProof, []*big
 		errors.New("The total sum was not equal to zero")
 	}
 
-	rp := bp_go.RPProveTrans(gamma, big.NewInt(total))
 
-	return rp, valArr
+	return valArr
 }

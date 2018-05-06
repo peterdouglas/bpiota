@@ -49,13 +49,25 @@ type Bundle []Transaction
 
 // Add adds a bundle to bundle slice. Elements which are not specified are filled with
 // zeroed trits.
-func (bs *Bundle) Add(num int, address Address, value *Commitment, timestamp time.Time, tag Trytes) error {
+func (bs *Bundle) Add(num int, address Address, value *Commitment, timestamp time.Time, rangeP string, tag Trytes) error {
+	var rangeTry Trytes
+
 	if tag == "" {
 		tag = EmptyHash[:27]
 	}
 	v, err := value.Encode()
 	if err != nil {
 		return err
+	}
+
+
+	if rangeP != "" {
+		rangeTry, err = AsciiToTrytes(rangeP)
+		if err != nil {
+			return err
+		}
+	} else {
+		rangeTry = emptySig
 	}
 
 	blind, err := AsciiToTrytes(base58.Encode(value.EncValue))
@@ -73,7 +85,7 @@ func (bs *Bundle) Add(num int, address Address, value *Commitment, timestamp tim
 			Address:                       address,
 			Value:                         pad(val, ValueTrinarySize/3),
 			BlindingFactor:                pad(blind, BlindingTrinarySize/3),
-			RangeProof:                    pad(emptySig, RangeProofTrinarySize/3),
+			RangeProof:                    pad(rangeTry, RangeProofTrinarySize/3),
 			ObsoleteTag:                   pad(tag, TagTrinarySize/3),
 			Timestamp:                     timestamp,
 			CurrentIndex:                  int64(len(*bs) - 1),
@@ -147,7 +159,6 @@ func (bs Bundle) getValidHash() Trytes {
 		offset := 243+81
 		if valid {
 			bs[0].ObsoleteTag = buf[offset : offset+ObsoleteTagTrinarySize].Trytes()
-			fmt.Printf("Valid, i = %s", i)
 			return h
 		}
 		i++
@@ -194,9 +205,9 @@ func (bs Bundle) Categorize(adr Address) (send Bundle, received Bundle) {
 func (bs Bundle) IsValid() error {
 	var total int64
 	sigs := make(map[Address][]Trytes)
-	proofValid := false
 	commitments := make([]Commitment, len(bs))
 	totalEC := bp_go.EC.Zero()
+	ecPoints := make([]bp_go.ECPoint, len(bs))
 
 	for i, b := range bs {
 		commitments[i].Trytes = Trytes(b.Value)
@@ -206,10 +217,11 @@ func (bs Bundle) IsValid() error {
 			return err
 		}
 
-		totalEC.Add(bp_go.ECPoint{
+		ecPoints[i] = bp_go.ECPoint{
 			X: ecPoint.X,
 			Y: ecPoint.Y,
-		})
+		}
+		totalEC.Add(ecPoints[i])
 	}
 	if !totalEC.Equal(bp_go.EC.Zero()) {
 		errors.New("The commitments did not add up to zero")
@@ -239,7 +251,6 @@ func (bs Bundle) IsValid() error {
 				sigs[tx.Address] = append(sigs[tx.Address], tx.SignatureMessageFragment)
 			}
 		}*/
-		if !proofValid {
 
 			tempProof := strings.TrimRight(string(b.RangeProof), "9")
 			if len(tempProof) % 2 != 0 {
@@ -249,18 +260,14 @@ func (bs Bundle) IsValid() error {
 			if err != nil {
 				return err
 			}
-			rangeProof := bp_go.RangeProof{}
-			err = rangeProof.Rebuild(proof)
-			if err != nil {
-				return err
-			}
 
 
-			if !bp_go.RPVerify(rangeProof) {
-				err := errors.New("The range proof failed to verify")
-				return err
-			}
+			_, err = bp_go.VerifyTrans(64, ecPoints[index].X, ecPoints[index].Y, proof)
+		if err != nil {
+			return err
 		}
+		return nil
+
 	}
 
 	// Validate the signatures
