@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/transaction.go" line="173" />
+    <bookmark url="file://$PROJECT_DIR$/transaction.go" line="174" />
     <bookmark url="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.go" line="103" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7cc00402-16a8-4936-898f-84de7bf58f9b" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/api.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bulletproofs.go" beforeDir="false" afterPath="$PROJECT_DIR$/bulletproofs.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bundle.go" beforeDir="false" afterPath="$PROJECT_DIR$/bundle.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bundle_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/bundle_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ec_sign.go" beforeDir="false" afterPath="$PROJECT_DIR$/ec_sign.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ec_sign_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ec_sign_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sign.go" beforeDir="false" afterPath="$PROJECT_DIR$/sign.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction.go" beforeDir="false" afterPath="$PROJECT_DIR$/transaction.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/transaction_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/transaction_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transfer.go" beforeDir="false" afterPath="$PROJECT_DIR$/transfer.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/transfer_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/transfer_test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -30,112 +25,83 @@
     <SUITE FILE_PATH="coverage/giota$TestTransfer2_in_github_com_peterdouglas_giota.out" NAME="TestTransfer2 in github.com/peterdouglas/giota Coverage Results" MODIFIED="1524823628995" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="vertical" split-proportion="0.5">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="api.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/api.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="67">
-                  <caret line="457" selection-start-line="457" selection-end-line="457" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="api_test.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/api_test.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="59">
-                  <caret line="211" column="24" selection-start-line="211" selection-start-column="24" selection-end-line="211" selection-end-column="24" />
-                  <folding>
-                    <element signature="e#1123#1157#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="bulletproofs.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/bulletproofs.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1215">
-                  <caret line="88" column="64" selection-start-line="88" selection-start-column="64" selection-end-line="88" selection-end-column="64" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="transfer_test.go" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/transfer_test.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="106">
-                  <caret line="33" column="1" lean-forward="true" selection-start-line="33" selection-start-column="1" selection-end-line="33" selection-end-column="1" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="ec_sign.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ec_sign.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="559">
-                  <caret line="95" column="5" selection-start-line="95" selection-start-column="5" selection-end-line="95" selection-end-column="5" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="bundle.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/bundle.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1410">
-                  <caret line="102" selection-start-line="102" selection-end-line="102" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="transaction.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/transaction.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="170">
-                  <caret line="129" selection-start-line="129" selection-end-line="129" />
-                  <folding>
-                    <element signature="e#1123#1168#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="transfer.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/transfer.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="458">
-                  <caret line="265" column="24" lean-forward="true" selection-start-line="265" selection-start-column="24" selection-end-line="265" selection-end-column="24" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="transaction_test.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/transaction_test.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1725">
-                  <caret line="97" column="5" selection-start-line="97" selection-start-column="5" selection-end-line="97" selection-end-column="5" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf>
-          <file leaf-file-name="transfer.go" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/transfer.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-539">
-                  <caret line="101" column="1" lean-forward="true" selection-start-line="101" selection-start-column="1" selection-end-line="101" selection-end-column="1" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="api.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="9600">
+              <caret line="653" selection-start-line="653" selection-end-line="653" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bulletproofs.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/bulletproofs.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="660">
+              <caret line="51" selection-start-line="51" selection-end-line="51" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="transfer_test.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/transfer_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2190">
+              <caret line="149" column="9" selection-start-line="149" selection-start-column="9" selection-end-line="149" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ec_sign.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ec_sign.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1335">
+              <caret line="95" column="5" selection-start-line="95" selection-start-column="5" selection-end-line="95" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bundle.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bundle.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="504">
+              <caret line="207" column="30" selection-start-line="207" selection-start-column="30" selection-end-line="207" selection-end-column="30" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="transaction.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/transaction.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="960">
+              <caret line="64" column="48" selection-start-line="64" selection-start-column="44" selection-end-line="64" selection-end-column="48" />
+              <folding>
+                <element signature="e#1123#1168#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bundle_test.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bundle_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1260">
+              <caret line="89" column="52" selection-start-line="89" selection-start-column="52" selection-end-line="89" selection-end-column="52" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="transfer.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/transfer.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="8265">
+              <caret line="565" selection-start-line="565" selection-end-line="565" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -146,7 +112,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Address</find>
       <find>sendT</find>
       <find>pubkey</find>
       <find>secp256k1.GenerateSharedSecret(</find>
@@ -176,6 +141,7 @@
       <find>attach</find>
       <find>Valid,</find>
       <find>balance</find>
+      <find>copy</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -197,7 +163,6 @@
         <option value="$PROJECT_DIR$/pow_go_test.go" />
         <option value="$PROJECT_DIR$/examples/getinputs/main.go" />
         <option value="$PROJECT_DIR$/constants.go" />
-        <option value="$PROJECT_DIR$/trinary.go" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/tempvals.go" />
         <option value="$PROJECT_DIR$/../iota-testnet-tools/coordinator/TestnetCoordinator.go" />
         <option value="$PROJECT_DIR$/bundle_test.go" />
@@ -206,16 +171,17 @@
         <option value="$PROJECT_DIR$/ec_sign.go" />
         <option value="$PROJECT_DIR$/bulletproofs_test.go" />
         <option value="$PROJECT_DIR$/pedersen.go" />
-        <option value="$PROJECT_DIR$/bulletproofs.go" />
         <option value="$PROJECT_DIR$/../bp-go/bulletproof.go" />
         <option value="$PROJECT_DIR$/../bp-go/transactions.go" />
         <option value="$PROJECT_DIR$/transaction_test.go" />
-        <option value="$PROJECT_DIR$/transaction.go" />
         <option value="$PROJECT_DIR$/bundle.go" />
-        <option value="$PROJECT_DIR$/api.go" />
-        <option value="$PROJECT_DIR$/api_test.go" />
         <option value="$PROJECT_DIR$/transfer.go" />
+        <option value="$PROJECT_DIR$/trinary.go" />
+        <option value="$PROJECT_DIR$/api.go" />
         <option value="$PROJECT_DIR$/transfer_test.go" />
+        <option value="$PROJECT_DIR$/api_test.go" />
+        <option value="$PROJECT_DIR$/bulletproofs.go" />
+        <option value="$PROJECT_DIR$/transaction.go" />
       </list>
     </option>
   </component>
@@ -229,7 +195,8 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="3" />
+    <option name="x" value="949" />
+    <option name="y" value="15" />
     <option name="width" value="929" />
     <option name="height" value="1039" />
   </component>
@@ -238,7 +205,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -270,11 +236,12 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultGoTemplateProperty" value="Go File" />
-    <property name="SearchEverywhereHistoryKey" value="tra&#9;null&#9;null&#10;TestAppr&#9;RUN_CONFIGURATION&#9;TestApproveTransactions in github.com/pe...&#10;trans&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transaction.go&#10;tr&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transfer.go&#10;.bro&#9;null&#9;null&#10;ttest&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transaction_test.go&#10;test&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transfer_test.go&#10;ec&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/ec_sign_test.go&#10;transfer&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transfer_test.go&#10;sc&#9;FILE&#9;file:///home/peterxyz/.GoLand2018.1/config/scratches/scratch.go&#10;api&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/api.go&#10;scra&#9;FILE&#9;file:///home/peterxyz/.GoLand2018.1/config/scratches/scratch.go&#10;transaction&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transaction_test.go&#10;bundle_&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/bundle_test.go&#10;ec_s&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/ec_sign_test.go&#10;random&#9;null&#9;null&#10;bun&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/bundle_test.go&#10;con&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/constants.go&#10;trin&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/trinary.go&#10;bund&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/bundle_test.go" />
+    <property name="SearchEverywhereHistoryKey" value="verifyTrans&#9;null&#9;null&#10;TestD&#9;RUN_CONFIGURATION&#9;TestGetDecodedBalances in github.com/pet...&#10;tra&#9;null&#9;null&#10;TestAppr&#9;RUN_CONFIGURATION&#9;TestApproveTransactions in github.com/pe...&#10;trans&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transaction.go&#10;tr&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transfer.go&#10;.bro&#9;null&#9;null&#10;ttest&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transaction_test.go&#10;test&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transfer_test.go&#10;ec&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/ec_sign_test.go&#10;transfer&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transfer_test.go&#10;sc&#9;FILE&#9;file:///home/peterxyz/.GoLand2018.1/config/scratches/scratch.go&#10;api&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/api.go&#10;scra&#9;FILE&#9;file:///home/peterxyz/.GoLand2018.1/config/scratches/scratch.go&#10;transaction&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/transaction_test.go&#10;bundle_&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/bundle_test.go&#10;ec_s&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/ec_sign_test.go&#10;random&#9;null&#9;null&#10;bun&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/bundle_test.go&#10;con&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/constants.go&#10;trin&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/trinary.go&#10;bund&#9;FILE&#9;file:///home/peterxyz/go/src/github.com/peterdouglas/giota/bundle_test.go" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$2/Languages" value="go" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
@@ -312,17 +279,6 @@
       <filePath value="$PROJECT_DIR$/" />
       <pattern value="^TestAPIGetBalances$" />
     </configuration>
-    <configuration name="TestAPIGetInclusionStates in github.com/peterdouglas/giota" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="giota" />
-      <working_directory value="$PROJECT_DIR$" />
-      <go_parameters value="-i" />
-      <framework value="gotest" />
-      <kind value="PACKAGE" />
-      <package value="github.com/peterdouglas/giota" />
-      <directory value="$PROJECT_DIR$/" />
-      <filePath value="$PROJECT_DIR$/" />
-      <pattern value="^TestAPIGetInclusionStates$" />
-    </configuration>
     <configuration name="TestApproveTransactions in github.com/peterdouglas/giota" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="giota" />
       <working_directory value="$PROJECT_DIR$" />
@@ -333,6 +289,17 @@
       <directory value="$PROJECT_DIR$/" />
       <filePath value="$PROJECT_DIR$/" />
       <pattern value="^TestApproveTransactions$" />
+    </configuration>
+    <configuration name="TestConvertToTrytes in github.com/peterdouglas/giota" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="giota" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/peterdouglas/giota" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestConvertToTrytes$" />
     </configuration>
     <configuration name="TestGetDecodedBalances in github.com/peterdouglas/giota" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="giota" />
@@ -360,75 +327,75 @@
       <item itemvalue="Go Test.TestTransfer2 in github.com/peterdouglas/giota" />
       <item itemvalue="Go Test.TestAPIGetBalances in github.com/peterdouglas/giota" />
       <item itemvalue="Go Test.TestApproveTransactions in github.com/peterdouglas/giota" />
-      <item itemvalue="Go Test.TestAPIGetInclusionStates in github.com/peterdouglas/giota" />
       <item itemvalue="Go Test.TestGetDecodedBalances in github.com/peterdouglas/giota" />
+      <item itemvalue="Go Test.TestConvertToTrytes in github.com/peterdouglas/giota" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Go Test.TestTransfer2 in github.com/peterdouglas/giota" />
-        <item itemvalue="Go Test.TestApproveTransactions in github.com/peterdouglas/giota" />
         <item itemvalue="Go Test.TestAPIGetBalances in github.com/peterdouglas/giota" />
         <item itemvalue="Go Test.TestGetDecodedBalances in github.com/peterdouglas/giota" />
-        <item itemvalue="Go Test.TestAPIGetInclusionStates in github.com/peterdouglas/giota" />
+        <item itemvalue="Go Test.TestApproveTransactions in github.com/peterdouglas/giota" />
+        <item itemvalue="Go Test.TestConvertToTrytes in github.com/peterdouglas/giota" />
       </list>
     </recent_temporary>
   </component>
   <component name="TestHistory">
-    <history-entry file="TestApproveTransactions_in_github_com_peterdouglas_giota - 2018.05.05 at 21h 33m 54s.xml">
-      <configuration name="TestApproveTransactions in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestGetDecodedBalances_in_github_com_peterdouglas_giota - 2018.05.07 at 00h 31m 31s.xml">
+      <configuration name="TestGetDecodedBalances in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestApproveTransactions_in_github_com_peterdouglas_giota - 2018.05.05 at 21h 56m 26s.xml">
-      <configuration name="TestApproveTransactions in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestApproveTransactions_in_github_com_peterdouglas_giota - 2018.05.06 at 00h 44m 55s.xml">
-      <configuration name="TestApproveTransactions in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.06 at 00h 45m 28s.xml">
+    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.07 at 00h 32m 00s.xml">
       <configuration name="TestTransfer2 in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.06 at 00h 54m 28s.xml">
+    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.07 at 00h 32m 03s.xml">
       <configuration name="TestTransfer2 in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.06 at 00h 58m 35s.xml">
+    <history-entry file="TestGetDecodedBalances_in_github_com_peterdouglas_giota - 2018.05.07 at 00h 38m 56s.xml">
+      <configuration name="TestGetDecodedBalances in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestAPIGetBalances_in_github_com_peterdouglas_giota - 2018.05.07 at 00h 39m 23s.xml">
+      <configuration name="TestAPIGetBalances in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestAPIGetBalances_in_github_com_peterdouglas_giota - 2018.05.07 at 00h 39m 39s.xml">
+      <configuration name="TestAPIGetBalances in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestAPIGetBalances_in_github_com_peterdouglas_giota - 2018.05.07 at 00h 39m 57s.xml">
+      <configuration name="TestAPIGetBalances in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.07 at 00h 40m 32s.xml">
       <configuration name="TestTransfer2 in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.06 at 12h 20m 24s.xml">
+    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.07 at 00h 58m 23s.xml">
       <configuration name="TestTransfer2 in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.06 at 12h 37m 25s.xml">
-      <configuration name="TestTransfer2 in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.06 at 12h 41m 30s.xml">
-      <configuration name="TestTransfer2 in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.06 at 12h 42m 50s.xml">
+    <history-entry file="TestTransfer2_in_github_com_peterdouglas_giota - 2018.05.07 at 01h 04m 51s.xml">
       <configuration name="TestTransfer2 in github.com/peterdouglas/giota" configurationId="GoTestRunConfiguration" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="3" width="929" height="1039" extended-state="0" />
+    <frame x="949" y="15" width="929" height="1039" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="right" id="Cargo" order="3" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3340564" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.8221258" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33442983" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.3289183" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.48318583" weight="0.11804767" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.324295" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.48318583" visible="true" weight="0.08626561" />
       <window_info anchor="bottom" id="Docker" order="8" />
       <window_info anchor="right" id="Database" order="3" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.329718" />
       <window_info id="Structure" order="1" sideWeight="0.5168142" side_tool="true" weight="0.43649948" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.38177875" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.38267544" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32897604" />
       <window_info anchor="right" id="Coverage" order="4" side_tool="true" weight="0.32977587" />
     </layout>
     <layout-to-restore>
@@ -436,21 +403,21 @@
       <window_info anchor="bottom" id="Docker" order="10" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Cargo" order="3" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49382716" weight="0.41248667" />
       <window_info id="Structure" order="1" sideWeight="0.50617284" side_tool="true" weight="0.4076841" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="9" weight="0.8221258" />
       <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.329718" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.38797814" />
       <window_info anchor="right" id="Database" order="4" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="9" weight="0.8221258" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" />
       <window_info id="Favorites" order="2" side_tool="true" />
     </layout-to-restore>
   </component>
@@ -494,11 +461,6 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/transfer_test.go</url>
-          <line>135</line>
-          <option name="timeStamp" value="215" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/transfer_test.go</url>
           <line>178</line>
           <option name="timeStamp" value="228" />
         </line-breakpoint>
@@ -519,33 +481,44 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/transfer_test.go</url>
-          <line>226</line>
-          <properties />
+          <line>230</line>
           <option name="timeStamp" value="240" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/transfer.go</url>
           <line>323</line>
-          <properties />
           <option name="timeStamp" value="242" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/transfer.go</url>
           <line>71</line>
-          <properties />
           <option name="timeStamp" value="244" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/api_test.go</url>
           <line>212</line>
-          <properties />
           <option name="timeStamp" value="245" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/transfer_test.go</url>
+          <line>205</line>
+          <option name="timeStamp" value="246" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/transfer_test.go</url>
+          <line>229</line>
+          <option name="timeStamp" value="247" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/transfer_test.go</url>
+          <line>145</line>
+          <option name="timeStamp" value="248" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="246" />
+      <option name="time" value="249" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
@@ -558,10 +531,13 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/transaction.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="5" selection-start-column="5" selection-end-column="5" />
+        <state relative-caret-position="900">
+          <caret line="64" column="48" selection-start-line="64" selection-start-column="44" selection-end-line="64" selection-end-column="48" />
+          <folding>
+            <element signature="e#1123#1168#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -762,45 +738,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trinary.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4125">
-          <caret line="280" column="5" selection-start-line="280" selection-start-column="5" selection-end-line="280" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/go-1.10/src/time/time.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15630">
-          <caret line="1042" column="5" selection-start-line="1042" selection-start-column="5" selection-end-line="1042" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../bp-go/bulletproof.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="26" column="27" selection-start-line="26" selection-start-column="27" selection-end-line="26" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../bp-go/transactions.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1950">
           <caret line="141" column="34" selection-start-line="141" selection-start-column="34" selection-end-line="141" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/go-1.10/src/testing/testing.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11490">
-          <caret line="782" selection-start-line="782" selection-end-line="782" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/go-1.10/src/runtime/asm_amd64.s">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="35415">
-          <caret line="2361" selection-start-line="2361" selection-end-line="2361" />
         </state>
       </provider>
     </entry>
@@ -825,34 +766,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bundle_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1260">
-          <caret line="89" column="52" selection-start-line="89" selection-start-column="52" selection-end-line="89" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/transaction_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1725">
-          <caret line="97" column="5" selection-start-line="97" selection-start-column="5" selection-end-line="97" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bulletproofs.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1215">
-          <caret line="88" column="64" selection-start-line="88" selection-start-column="64" selection-end-line="88" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bundle.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1410">
-          <caret line="102" selection-start-line="102" selection-end-line="102" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../iotaledger/giota/api.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6630">
@@ -867,51 +780,114 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/transaction.go">
+    <entry file="file://$PROJECT_DIR$/transaction_test.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="129" selection-start-line="129" selection-end-line="129" />
-          <folding>
-            <element signature="e#1123#1168#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1443">
+          <caret line="97" column="5" selection-start-line="97" selection-start-column="5" selection-end-line="97" selection-end-column="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api.go">
+    <entry file="file://$PROJECT_DIR$/trinary.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="67">
-          <caret line="457" selection-start-line="457" selection-end-line="457" />
+        <state relative-caret-position="172">
+          <caret line="48" column="5" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ec_sign.go">
+    <entry file="file:///usr/local/lib/go-1.10/src/testing/testing.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="95" column="5" selection-start-line="95" selection-start-column="5" selection-end-line="95" selection-end-column="5" />
+        <state relative-caret-position="232">
+          <caret line="782" selection-start-line="782" selection-end-line="782" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/go-1.10/src/runtime/asm_amd64.s">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="511">
+          <caret line="2361" selection-start-line="2361" selection-end-line="2361" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/api_test.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="59">
-          <caret line="211" column="24" selection-start-line="211" selection-start-column="24" selection-end-line="211" selection-end-column="24" />
+        <state relative-caret-position="389">
+          <caret line="195" column="128" selection-start-line="195" selection-start-column="128" selection-end-line="195" selection-end-column="128" />
           <folding>
             <element signature="e#1123#1157#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/local/lib/go-1.10/src/time/time.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="1048" selection-start-line="1048" selection-end-line="1048" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9600">
+          <caret line="653" selection-start-line="653" selection-end-line="653" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/transfer.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="265" column="24" lean-forward="true" selection-start-line="265" selection-start-column="24" selection-end-line="265" selection-end-column="24" />
+        <state relative-caret-position="8265">
+          <caret line="565" selection-start-line="565" selection-end-line="565" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/transfer_test.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="106">
-          <caret line="33" column="1" lean-forward="true" selection-start-line="33" selection-start-column="1" selection-end-line="33" selection-end-column="1" />
+        <state relative-caret-position="2190">
+          <caret line="149" column="9" selection-start-line="149" selection-start-column="9" selection-end-line="149" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bundle_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1260">
+          <caret line="89" column="52" selection-start-line="89" selection-start-column="52" selection-end-line="89" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ec_sign.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1335">
+          <caret line="95" column="5" selection-start-line="95" selection-start-column="5" selection-end-line="95" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/transaction.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="960">
+          <caret line="64" column="48" selection-start-line="64" selection-start-column="44" selection-end-line="64" selection-end-column="48" />
+          <folding>
+            <element signature="e#1123#1168#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../bp-go/bulletproof.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="23" column="25" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bundle.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="207" column="30" selection-start-line="207" selection-start-column="30" selection-end-line="207" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bulletproofs.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="660">
+          <caret line="51" selection-start-line="51" selection-end-line="51" />
         </state>
       </provider>
     </entry>

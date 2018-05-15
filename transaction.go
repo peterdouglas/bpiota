@@ -35,9 +35,9 @@ import (
 type Transaction struct {
 	SignatureMessageFragment      Trytes
 	Address                       Address
-	Value                         Trytes `json:",string"`
-	BlindingFactor				  Trytes
-	RangeProof					  Trytes
+	VectorP                       Trytes    `json:",string"`
+	Value                         Trytes
+	RangeProof                    Trytes
 	ObsoleteTag                   Trytes
 	Timestamp                     time.Time `json:",string"`
 	CurrentIndex                  int64     `json:",string"`
@@ -68,9 +68,9 @@ const (
 	ValueTrinaryOffset                    = AddressTrinaryOffset + AddressTrinarySize
 	ValueTrinarySize                      = 270
 	BlindingTrinaryOffset	              = ValueTrinaryOffset + ValueTrinarySize
-	BlindingTrinarySize           		  = 1848
+	BlindingTrinarySize           		  = 1110
 	RangeProofTrinaryOffset	              = BlindingTrinaryOffset + BlindingTrinarySize
-	RangeProofTrinarySize          		  = 20850
+	RangeProofTrinarySize          		  = 8250
 	ObsoleteTagTrinaryOffset              = RangeProofTrinaryOffset + RangeProofTrinarySize
 	ObsoleteTagTrinarySize                = 81
 	TimestampTrinaryOffset                = ObsoleteTagTrinaryOffset + ObsoleteTagTrinarySize
@@ -104,6 +104,7 @@ const (
 		TagTrinarySize + AttachmentTimestampTrinarySize +
 		AttachmentTimestampLowerBoundTrinarySize + AttachmentTimestampUpperBoundTrinarySize +
 		NonceTrinarySize
+
 )
 
 // NewTransaction makes tx from trits.
@@ -144,8 +145,8 @@ func (t *Transaction) parser(trits Trits) error {
 	if err != nil {
 		return err
 	}
-	t.Value = trits[ValueTrinaryOffset : ValueTrinaryOffset+ValueTrinarySize].Trytes()
-	t.BlindingFactor = trits[BlindingTrinaryOffset : BlindingTrinaryOffset+BlindingTrinarySize].Trytes()
+	t.VectorP = trits[ValueTrinaryOffset : ValueTrinaryOffset+ValueTrinarySize].Trytes()
+	t.Value = trits[BlindingTrinaryOffset : BlindingTrinaryOffset+BlindingTrinarySize].Trytes()
 	t.RangeProof = trits[RangeProofTrinaryOffset : RangeProofTrinaryOffset+RangeProofTrinarySize].Trytes()
 	t.ObsoleteTag = trits[ObsoleteTagTrinaryOffset : ObsoleteTagTrinaryOffset+ObsoleteTagTrinarySize].Trytes()
 	timestamp := trits[TimestampTrinaryOffset : TimestampTrinaryOffset+TimestampTrinarySize].Int()
@@ -169,8 +170,8 @@ func (t *Transaction) Trytes() Trytes {
 	tr := make(Trits, transactionTrinarySize)
 	copy(tr, t.SignatureMessageFragment.Trits())
 	copy(tr[AddressTrinaryOffset:], Trytes(t.Address).Trits())
-	copy(tr[ValueTrinaryOffset:], t.Value.Trits())
-	copy(tr[BlindingTrinaryOffset:], t.BlindingFactor.Trits())
+	copy(tr[ValueTrinaryOffset:], t.VectorP.Trits())
+	copy(tr[BlindingTrinaryOffset:], t.Value.Trits())
 	copy(tr[RangeProofTrinaryOffset:], t.RangeProof.Trits())
 	copy(tr[ObsoleteTagTrinaryOffset:], t.ObsoleteTag.Trits())
 	copy(tr[TimestampTrinaryOffset:], Int2Trits(t.Timestamp.Unix(), TimestampTrinarySize))

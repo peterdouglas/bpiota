@@ -35,24 +35,21 @@ type Commitment struct {
 func (c *Commitment) Encode() (Trytes, error) {
 
 	pkCompressed := secp256k1.NewPublicKey(c.Vector.X, c.Vector.Y)
-	baseTr, err := AsciiToTrytes(base58.Encode(pkCompressed.SerializeCompressed()))
-	if err != nil {
-		return "", err
-	}
-	fmt.Printf("Base trytes are: %+v\n", base58.Encode(pkCompressed.SerializeCompressed()))
-	/*keyTrit := make([]byte, 48)
+	//baseTr, err := AsciiToTrytes(base58.Encode(pkCompressed.SerializeCompressed()))
+	//if err != nil {
+	//	return "", err
+	//}
+	//fmt.Printf("Base trytes are: %+v\n", base58.Encode(pkCompressed.SerializeCompressed()))
+	keyTrit := make([]byte, 48)
 	copy(keyTrit,pkCompressed.SerializeCompressed())
 	trits, err := BytesToTrits(keyTrit)
 	if err != nil {
 		return "", err
 	}
 	c.Trytes = trits.Trytes()
-	byte2 := c.Trytes.Trits().JavaTrits()
+	//byte2 := c.Trytes.Trits().JavaTrits()
 	fmt.Printf("Trytes: %+v\n", c.Trytes)
-
-	fmt.Printf("Byte array 2: %+v\n", byte2)
-	*/
-	c.Trytes = baseTr
+	//c.Trytes = baseTr
 	return c.Trytes, nil
 
 }

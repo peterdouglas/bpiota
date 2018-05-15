@@ -193,7 +193,7 @@ func TestAPIGetBalances(t *testing.T) {
 		var server = RandomNode()
 		api := NewAPI(server, nil)
 
-		resp, err = api.GetBalances([]Address{"Q9VTJLJD9FJORLXLJEINHAKLPOJQOQDZKUD9MWDEEH9CQLLBRYWZ9OIKHDFOHYQIXXCGACDGTYTBBQIC9"}, 100)
+		resp, err = api.GetBalances([]Address{"ADPDZZRPWJPOXHSQVLJFIBZANPDU9NWEMLYELBPOFIMRHGNBUYEMSWSGEKTH9QWVBOOQIR9KEDM9KTQD9"}, 100)
 		if err == nil {
 			break
 		}

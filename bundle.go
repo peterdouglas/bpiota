@@ -83,8 +83,8 @@ func (bs *Bundle) Add(num int, address Address, value *Commitment, timestamp tim
 		b := Transaction{
 			SignatureMessageFragment:      emptySig,
 			Address:                       address,
-			Value:                         pad(val, ValueTrinarySize/3),
-			BlindingFactor:                pad(blind, BlindingTrinarySize/3),
+			VectorP:                       pad(val, ValueTrinarySize/3),
+			Value:                         pad(blind, BlindingTrinarySize/3),
 			RangeProof:                    pad(rangeTry, RangeProofTrinarySize/3),
 			ObsoleteTag:                   pad(tag, TagTrinarySize/3),
 			Timestamp:                     timestamp,
@@ -210,7 +210,7 @@ func (bs Bundle) IsValid() error {
 	ecPoints := make([]bp_go.ECPoint, len(bs))
 
 	for i, b := range bs {
-		commitments[i].Trytes = Trytes(b.Value)
+		commitments[i].Trytes = Trytes(b.VectorP)
 		ecPoint, err :=commitments[i].Decode()
 
 		if err != nil {
