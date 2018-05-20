@@ -30,7 +30,6 @@ import (
 	"time"
 	"github.com/peterdouglas/bp-go"
 	"github.com/decred/base58"
-	"log"
 	"strings"
 )
 
@@ -189,7 +188,7 @@ func (bs Bundle) Categorize(adr Address) (send Bundle, received Bundle) {
 		switch {
 		case b.Address != adr:
 			continue
-		case b.RangeProof[0:6] != "9999999":
+		case b.RangeProof[0:6] != "999999":
 			received = append(received, b)
 		default:
 			send = append(send, b)
@@ -235,7 +234,6 @@ func (bs Bundle) IsValid() error {
 		case b.LastIndex != int64(len(bs)-1):
 			return fmt.Errorf("LastIndex of index %d is not correct", b.CurrentIndex)
 		case b.RangeProof[0:6] == "999999":
-			log.Print(b.RangeProof[0:6])
 			continue
 		}
 

@@ -29,7 +29,6 @@ import (
 	"math"
 	"time"
 	"github.com/NebulousLabs/hdkey"
-	"fmt"
 	"log"
 	"github.com/NebulousLabs/hdkey/schnorr"
 	"github.com/decred/base58"
@@ -68,7 +67,6 @@ func GetUsedAddress(api *API, seed Trytes) (Address, []Address, error) {
 		}
 
 		if len(resp.Hashes) == 0 {
-			fmt.Printf("Free address was found at %v\n", index)
 			return adr, all, nil
 		}
 
@@ -356,7 +354,6 @@ func addRemainder(receiverPub *secp256k1.PublicKey, secInt *big.Int, preProof *P
 				return err
 			}
 			val := big.NewInt(remain)
-            fmt.Printf("The remainder val is %v, and the address is %v\n", val.Int64(), adr)
 			// generate the commitment for the remainder
 			comm := GenerateCommitment(secp256k1.NewPublicKey(pubkey.Coords()), secInt, val)
 
@@ -431,7 +428,6 @@ func signInputs(preProofs *ProofPrep, inputs []AddressInfo, bundle Bundle, seed 
 			log.Fatal(err)
 		}
 		sig, err := schnorr.Sign(sk, hash[:])
-		fmt.Printf("Sig1 is %x\nHash is %s\n", sig, hash)
 		if err != nil {
 			log.Fatal("The signature has failed")
 		}

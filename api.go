@@ -497,7 +497,6 @@ func (api *API) Balances(adr []Address, seed Trytes) (Balances, error) {
 			Message:  balTryt,
 			Index:   i,
 		}
-		fmt.Printf("Value is %v\n", b.Value)
 
 		bs = append(bs, b)
 	}

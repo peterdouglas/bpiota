@@ -6,7 +6,6 @@ import (
 	"github.com/decred/dcrd/dcrec/secp256k1"
 	"errors"
 	"github.com/decred/base58"
-	"fmt"
 )
 
 type PreProof struct {
@@ -35,21 +34,11 @@ type Commitment struct {
 func (c *Commitment) Encode() (Trytes, error) {
 
 	pkCompressed := secp256k1.NewPublicKey(c.Vector.X, c.Vector.Y)
-	//baseTr, err := AsciiToTrytes(base58.Encode(pkCompressed.SerializeCompressed()))
-	//if err != nil {
-	//	return "", err
-	//}
-	//fmt.Printf("Base trytes are: %+v\n", base58.Encode(pkCompressed.SerializeCompressed()))
-	keyTrit := make([]byte, 48)
-	copy(keyTrit,pkCompressed.SerializeCompressed())
-	trits, err := BytesToTrits(keyTrit)
+	baseTr, err := AsciiToTrytes(base58.Encode(pkCompressed.SerializeCompressed()))
 	if err != nil {
 		return "", err
 	}
-	c.Trytes = trits.Trytes()
-	//byte2 := c.Trytes.Trits().JavaTrits()
-	fmt.Printf("Trytes: %+v\n", c.Trytes)
-	//c.Trytes = baseTr
+	c.Trytes = baseTr
 	return c.Trytes, nil
 
 }

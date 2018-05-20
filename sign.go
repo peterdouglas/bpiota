@@ -31,7 +31,6 @@ import (
 	"math/big"
 	"log"
 	"github.com/NebulousLabs/hdkey/eckey"
-	"fmt"
 	"crypto/sha256"
 	"github.com/NebulousLabs/hdkey/schnorr"
 	"github.com/decred/base58"
@@ -138,7 +137,6 @@ func IsValidSig(address Address, signatureFragments []Trytes, bundleHash Trytes)
 		}
 		rebSig := new(schnorr.Signature)
 		copy(rebSig[:], base58.Decode(rebuilt))
-		fmt.Printf("Sig2 is %x\n", rebSig)
 		sha256.New()
 		hash := sha256.Sum256([]byte(bundleHash))
 		err = schnorr.Verify(rebSig, uncompPk, hash[:]); if err != nil {
