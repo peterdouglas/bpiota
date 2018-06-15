@@ -150,7 +150,6 @@ func TrytesToAscii(input Trytes) (string, error) {
 	for i := 0; i < len(input); i+= 2  {
 		firstVal, _ := utf8.DecodeRuneInString(string(input[i:]))
 		secondVal, _ := utf8.DecodeRuneInString(string(input[i + 1:]))
-		//firstVal := TryteAlphabet[tempTryte[0]]
 		ind1 := strings.Index(TryteAlphabet, string(firstVal))
 		ind2 := strings.Index(TryteAlphabet, string(secondVal))
 		decimalVal := ind1 + ind2 * 27
